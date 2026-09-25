@@ -45,7 +45,7 @@ export default function AdminShell({
 
   return (
     <div className="min-h-screen bg-cream text-ink">
-      <header className="sticky top-0 z-40 border-b border-espresso/10 bg-cream/90 px-6 py-4 backdrop-blur-md md:px-10">
+      <header className="sticky top-0 z-40 border-b border-white/20 bg-cream/70 px-6 py-4 backdrop-blur-2xl backdrop-saturate-150 md:px-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/admin/orders" className="font-display text-lg italic text-espresso">

@@ -69,7 +69,7 @@ export default function AccountsManager({
 
       <form
         onSubmit={handleCreate}
-        className="mt-8 flex flex-col gap-4 rounded-[4px] border border-gold/20 bg-cream-soft p-6 sm:flex-row sm:items-end sm:flex-wrap"
+        className="mt-8 flex flex-col gap-4 rounded-2xl border border-white/25 bg-cream-soft/60 p-6 shadow-[0_8px_30px_-14px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150 sm:flex-row sm:items-end sm:flex-wrap"
       >
         <label className="flex flex-1 min-w-[160px] flex-col gap-1.5 text-sm text-espresso/80">
           {t.admin.newAdminUsername}
@@ -116,7 +116,7 @@ export default function AccountsManager({
         {admins.map((a) => (
           <div
             key={a.id}
-            className="flex items-center justify-between rounded-[4px] border border-espresso/10 bg-cream-soft px-5 py-3.5"
+            className="flex items-center justify-between rounded-2xl border border-white/20 bg-cream-soft/50 px-5 py-3.5 backdrop-blur-md"
           >
             <div>
               <p className="text-sm text-espresso">{a.username}</p>

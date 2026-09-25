@@ -13,7 +13,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       onClick={toggleTheme}
       data-cursor-hover
       aria-label={t.theme.toggle}
-      className={`flex h-9 w-9 items-center justify-center rounded-full border border-espresso/15 text-espresso transition-colors hover:bg-espresso/5 ${className}`}
+      className={`flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-white/10 text-espresso backdrop-blur-md transition-colors hover:bg-white/25 ${className}`}
     >
       {theme === "light" ? (
         <svg

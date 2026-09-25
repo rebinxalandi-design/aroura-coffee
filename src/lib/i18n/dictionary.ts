@@ -106,6 +106,10 @@ export const dictionary = {
       backToSite: "Back to site",
       welcomeBack: "Welcome back",
       deleteConfirm: "Are you sure?",
+      nameRequired: "Name (English + Persian) is required.",
+      priceInvalid: "Price must be a positive number.",
+      photoRequired: "Please upload a photo.",
+      uploadFailed: "Upload failed. Please try again.",
       categories: {
         coffee: "Coffee",
         espresso: "Espresso",
@@ -220,6 +224,10 @@ export const dictionary = {
       backToSite: "بازگشت به سایت",
       welcomeBack: "خوش برگشتید",
       deleteConfirm: "آیا مطمئن هستید؟",
+      nameRequired: "نام (انگلیسی و فارسی) الزامی است.",
+      priceInvalid: "قیمت باید عددی مثبت باشد.",
+      photoRequired: "لطفاً یک عکس بارگذاری کنید.",
+      uploadFailed: "بارگذاری ناموفق بود. دوباره تلاش کنید.",
       categories: {
         coffee: "قهوه",
         espresso: "اسپرسو",

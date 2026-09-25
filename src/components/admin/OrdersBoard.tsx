@@ -89,7 +89,7 @@ export default function OrdersBoard() {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="flex flex-col gap-4 rounded-[4px] border border-espresso/10 bg-cream-soft p-5 md:flex-row md:items-center md:justify-between"
+              className="flex flex-col gap-4 rounded-2xl border border-white/25 bg-cream-soft/60 p-5 shadow-[0_8px_30px_-14px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150 md:flex-row md:items-center md:justify-between"
             >
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3">

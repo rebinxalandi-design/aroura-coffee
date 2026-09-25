@@ -35,7 +35,7 @@ export default function MenuCard({
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       data-cursor-hover
-      className="group relative flex flex-col overflow-hidden rounded-[3px] border border-espresso/8 bg-cream-soft/60 transition-colors duration-500 hover:bg-cream-soft"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-cream-soft/50 shadow-[0_8px_30px_-12px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150 transition-colors duration-500 hover:bg-cream-soft/70"
     >
       <div className="relative aspect-[5/4] w-full overflow-hidden bg-beige">
         <div ref={imgRef} className="absolute inset-0">
@@ -49,7 +49,7 @@ export default function MenuCard({
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-espresso-deep/35 via-transparent to-espresso-deep/10" />
         </div>
         {tag && (
-          <span className="absolute left-4 top-4 rounded-full bg-cream/90 px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-espresso/70 shadow-sm backdrop-blur-sm">
+          <span className="absolute left-4 top-4 rounded-full border border-white/30 bg-white/25 px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-espresso shadow-sm backdrop-blur-md">
             {tag}
           </span>
         )}

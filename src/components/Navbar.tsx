@@ -8,6 +8,7 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useLocale();
 
   useEffect(() => {
@@ -15,6 +16,22 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Close the drawer on route-internal anchor navigation and on resize past
+  // the mobile breakpoint, so it can't be left open behind a desktop layout.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = () => setMenuOpen(false);
+    const onResize = () => {
+      if (window.innerWidth >= 768) setMenuOpen(false);
+    };
+    document.addEventListener("click", close, { capture: true });
+    window.addEventListener("resize", onResize);
+    return () => {
+      document.removeEventListener("click", close, { capture: true });
+      window.removeEventListener("resize", onResize);
+    };
+  }, [menuOpen]);
 
   const LINKS = [
     { label: t.nav.menu, href: "#menu" },
@@ -25,8 +42,8 @@ export default function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-5 transition-all duration-500 md:px-12 ${
-        scrolled
-          ? "bg-cream/85 backdrop-blur-md shadow-[0_1px_0_0_rgba(74,47,34,0.08)]"
+        scrolled || menuOpen
+          ? "bg-cream/70 backdrop-blur-xl backdrop-saturate-150 shadow-[0_1px_0_0_rgba(74,47,34,0.08)]"
           : "bg-transparent"
       }`}
     >
@@ -59,15 +76,63 @@ export default function Navbar() {
         </MagneticButton>
         <button
           data-cursor-hover
-          aria-label="Menu"
-          className="flex flex-col gap-1.5 md:hidden"
-          onClick={() => {
-            document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
+          aria-label={menuOpen ? "Close menu" : "Menu"}
+          aria-expanded={menuOpen}
+          className="relative flex h-9 w-9 flex-col items-center justify-center gap-1.5 md:hidden"
+          onClick={(e) => {
+            e.stopPropagation();
+            setMenuOpen((v) => !v);
           }}
         >
-          <span className="h-px w-6 bg-espresso" />
-          <span className="h-px w-6 bg-espresso" />
+          <span
+            className={`h-px w-6 bg-espresso transition-transform duration-300 ${
+              menuOpen ? "translate-y-[3.5px] rotate-45" : ""
+            }`}
+          />
+          <span
+            className={`h-px w-6 bg-espresso transition-transform duration-300 ${
+              menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
+            }`}
+          />
         </button>
+      </div>
+
+      {/* Mobile drawer: frosted glass panel, dropping in below the header. */}
+      <div
+        className={`absolute inset-x-0 top-full overflow-hidden transition-[grid-template-rows] duration-300 ease-out md:hidden ${
+          menuOpen ? "grid grid-rows-[1fr]" : "grid grid-rows-[0fr]"
+        }`}
+      >
+        <div className="min-h-0">
+          <nav
+            className="flex flex-col gap-1 border-t border-espresso/10 bg-cream/70 px-6 py-4 backdrop-blur-xl backdrop-saturate-150"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                data-cursor-hover
+                className="py-3 text-base tracking-wide text-espresso/85 transition-colors hover:text-espresso"
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+            <div className="mt-2 flex items-center gap-3 border-t border-espresso/10 pt-4">
+              <LocaleSwitcher />
+              <MagneticButton
+                className="!px-5 !py-2.5 text-xs"
+                onClick={() => {
+                  setMenuOpen(false);
+                  document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                {t.nav.orderNow}
+              </MagneticButton>
+            </div>
+          </nav>
+        </div>
       </div>
     </header>
   );

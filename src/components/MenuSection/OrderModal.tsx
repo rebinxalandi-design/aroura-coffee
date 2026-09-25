@@ -59,7 +59,7 @@ export default function OrderModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-[4px] border border-gold/20 bg-cream p-8 shadow-2xl"
+        className="w-full max-w-md rounded-2xl border border-white/25 bg-cream/75 p-8 shadow-2xl backdrop-blur-2xl backdrop-saturate-150"
       >
         <h3 className="font-display text-2xl italic text-espresso">
           {t.orderModal.title}

@@ -24,7 +24,7 @@ export default function LanguageModal() {
       aria-modal="true"
       aria-labelledby="lang-modal-title"
     >
-      <div className="w-full max-w-sm rounded-[4px] border border-gold/20 bg-cream p-8 text-center shadow-2xl md:p-10">
+      <div className="w-full max-w-sm rounded-2xl border border-white/25 bg-cream/75 p-8 text-center shadow-2xl backdrop-blur-2xl backdrop-saturate-150 md:p-10">
         <p className="mb-2 text-xs uppercase tracking-[0.28em] text-wood">
           Aroura
         </p>
@@ -43,7 +43,7 @@ export default function LanguageModal() {
             type="button"
             onClick={() => chooseLocale("en")}
             data-cursor-hover
-            className="group relative overflow-hidden rounded-[3px] border border-espresso/15 bg-espresso px-6 py-3.5 text-sm tracking-wide text-cream transition-colors duration-300 hover:bg-espresso-deep"
+            className="group relative overflow-hidden rounded-xl border border-espresso/15 bg-espresso px-6 py-3.5 text-sm tracking-wide text-cream transition-colors duration-300 hover:bg-espresso-deep"
           >
             {t.langModal.english}
           </button>
@@ -51,8 +51,8 @@ export default function LanguageModal() {
             type="button"
             onClick={() => chooseLocale("fa")}
             data-cursor-hover
-            className="group relative overflow-hidden rounded-[3px] border border-espresso/15 bg-transparent px-6 py-3.5 text-sm tracking-wide text-espresso transition-colors duration-300 hover:bg-espresso/5"
-            style={{ fontFamily: "var(--font-sans)" }}
+            className="group relative overflow-hidden rounded-xl border border-espresso/15 bg-white/20 px-6 py-3.5 text-sm tracking-wide text-espresso backdrop-blur-md transition-colors duration-300 hover:bg-white/35"
+            style={{ fontFamily: "var(--font-vazirmatn)" }}
           >
             {t.langModal.persian}
           </button>

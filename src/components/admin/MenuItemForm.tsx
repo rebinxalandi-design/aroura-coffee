@@ -57,12 +57,12 @@ export default function MenuItemForm({
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Upload failed");
+        setError(data.error ?? t.admin.uploadFailed);
         return;
       }
       setImageSrc(data.src);
     } catch {
-      setError("Upload failed");
+      setError(t.admin.uploadFailed);
     } finally {
       setUploading(false);
     }
@@ -74,15 +74,15 @@ export default function MenuItemForm({
 
     const priceNum = Number(price);
     if (!nameEn.trim() || !nameFa.trim()) {
-      setError("Name (EN + FA) is required.");
+      setError(t.admin.nameRequired);
       return;
     }
     if (!priceNum || priceNum <= 0) {
-      setError("Price must be a positive number.");
+      setError(t.admin.priceInvalid);
       return;
     }
     if (!imageSrc) {
-      setError("Please upload a photo.");
+      setError(t.admin.photoRequired);
       return;
     }
 
@@ -103,7 +103,7 @@ export default function MenuItemForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-4 rounded-[4px] border border-gold/20 bg-cream-soft p-6"
+      className="flex flex-col gap-4 rounded-2xl border border-white/25 bg-cream-soft/60 p-6 shadow-[0_8px_30px_-14px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150"
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-sm text-espresso/80">

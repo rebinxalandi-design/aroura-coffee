@@ -114,7 +114,7 @@ export default function MenuManager({
           ) : (
             <div
               key={item.id}
-              className="flex flex-col overflow-hidden rounded-[4px] border border-espresso/10 bg-cream-soft"
+              className="flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-cream-soft/50 shadow-[0_8px_30px_-14px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150"
             >
               <div className="relative aspect-[5/4] w-full bg-beige">
                 <Image
@@ -124,7 +124,7 @@ export default function MenuManager({
                   sizes="(max-width: 768px) 90vw, 30vw"
                   className="object-cover"
                 />
-                <span className="absolute left-3 top-3 rounded-full bg-cream/90 px-3 py-1 text-[10px] uppercase tracking-[0.12em] text-espresso/70">
+                <span className="absolute left-3 top-3 rounded-full border border-white/30 bg-white/25 px-3 py-1 text-[10px] uppercase tracking-[0.12em] text-espresso backdrop-blur-md">
                   {t.admin.categories[item.category]}
                 </span>
               </div>
