@@ -36,17 +36,25 @@ function readStoredLocale(): Locale | null {
 }
 
 export default function LocaleProvider({ children }: { children: ReactNode }) {
-  // Lazy initializers avoid a synchronous setState-in-effect. window/
-  // localStorage are unavailable during SSR, so these fall back to English
-  // with the modal hidden on the server and reconcile once mounted in the
-  // browser (matches the inline blocking script in layout.tsx).
-  const [locale, setLocaleState] = useState<Locale>(
-    () => readStoredLocale() ?? "en"
-  );
-  const [showLangModal, setShowLangModal] = useState<boolean>(
-    () => readStoredLocale() === null
-  );
+  // The server can never see localStorage, so it always renders as if no
+  // locale were stored yet (English, modal hidden) to guarantee the first
+  // paint matches on both sides. Once mounted, an effect reconciles both
+  // values against localStorage — this intentionally trades "the modal
+  // might pop in a frame late" for "no hydration mismatch," rather than
+  // guessing at a value the server can't actually know.
+  const [locale, setLocaleState] = useState<Locale>("en");
+  const [showLangModal, setShowLangModal] = useState(false);
   const [ready] = useState(true);
+
+  useEffect(() => {
+    const stored = readStoredLocale();
+    if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing with localStorage, not derivable during render/SSR
+      setLocaleState(stored);
+    } else {
+      setShowLangModal(true);
+    }
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = locale;

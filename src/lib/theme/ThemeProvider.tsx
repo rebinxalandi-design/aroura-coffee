@@ -36,11 +36,19 @@ function readInitialTheme(): Theme {
 }
 
 export default function ThemeProvider({ children }: { children: ReactNode }) {
-  // Lazy initializer avoids a synchronous setState-in-effect (and matches
-  // the inline blocking script in layout.tsx that sets data-theme pre-paint;
-  // window is undefined during SSR so this safely falls back to "light" and
-  // reconciles with the DOM attribute the script already set on hydration).
-  const [theme, setThemeState] = useState<Theme>(() => readInitialTheme());
+  // The server always renders "light" (it can't see localStorage), so the
+  // client's first render must match that exactly or React throws a
+  // hydration mismatch — even though the inline blocking script in
+  // layout.tsx has already set the correct data-theme attribute on <html>
+  // pre-paint. An effect reconciles React's own state (and anything that
+  // reads `theme` from context, like the ThemeToggle icon) right after
+  // mount instead of guessing a value the server can't know up front.
+  const [theme, setThemeState] = useState<Theme>("light");
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing with localStorage, not derivable during render/SSR
+    setThemeState(readInitialTheme());
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);

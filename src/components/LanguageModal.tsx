@@ -1,11 +1,18 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function LanguageModal() {
   const { showLangModal, chooseLocale, t } = useLocale();
+  const pathname = usePathname();
 
-  if (!showLangModal) return null;
+  // The admin panel has its own locale switcher in its header; the
+  // first-visit language prompt is a customer-facing marketing-site concern
+  // and would otherwise block the login form with no way to reach it.
+  const isAdminRoute = pathname?.startsWith("/admin");
+
+  if (!showLangModal || isAdminRoute) return null;
 
   return (
     <div
