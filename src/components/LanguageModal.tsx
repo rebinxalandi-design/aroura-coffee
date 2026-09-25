@@ -9,10 +9,13 @@ export default function LanguageModal() {
 
   // The admin panel has its own locale switcher in its header; the
   // first-visit language prompt is a customer-facing marketing-site concern
-  // and would otherwise block the login form with no way to reach it.
-  const isAdminRoute = pathname?.startsWith("/admin");
+  // and would otherwise block the login form with no way to reach it. The
+  // /qr page is meant to be scanned and read at a glance (e.g. printed on a
+  // table card) — it shouldn't stack a second language decision in front of
+  // the one the visitor is about to make on the page the code points to.
+  const skipModal = pathname?.startsWith("/admin") || pathname === "/qr";
 
-  if (!showLangModal || isAdminRoute) return null;
+  if (!showLangModal || skipModal) return null;
 
   return (
     <div

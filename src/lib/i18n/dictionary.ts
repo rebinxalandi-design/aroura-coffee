@@ -19,6 +19,12 @@ export const dictionary = {
       dark: "Dark",
       toggle: "Toggle theme",
     },
+    qrPage: {
+      eyebrow: "Aroura Coffee",
+      title: "Scan to open",
+      subtitle: "Point your phone's camera at the code to visit the site.",
+      urlLabel: "Or type this address:",
+    },
     menu: {
       eyebrow: "The Menu",
       title: "Every cup, made to order.",
@@ -126,6 +132,12 @@ export const dictionary = {
       light: "روشن",
       dark: "تیره",
       toggle: "تغییر پوسته",
+    },
+    qrPage: {
+      eyebrow: "کافه آئورا",
+      title: "برای ورود اسکن کنید",
+      subtitle: "دوربین گوشی خود را روی کد بگیرید تا وارد سایت شوید.",
+      urlLabel: "یا این آدرس را وارد کنید:",
     },
     menu: {
       eyebrow: "منو",
