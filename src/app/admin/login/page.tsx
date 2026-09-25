@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
             />
           </label>
 
-          {error && <p className="text-sm text-red-700">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <button
             type="submit"

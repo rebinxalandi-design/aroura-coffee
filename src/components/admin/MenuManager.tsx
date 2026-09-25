@@ -154,7 +154,7 @@ export default function MenuManager({
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="text-xs uppercase tracking-[0.1em] text-red-800 underline decoration-red-800/30 underline-offset-4 hover:decoration-red-800"
+                    className="text-xs uppercase tracking-[0.1em] text-danger underline decoration-danger/30 underline-offset-4 hover:decoration-danger"
                   >
                     {t.admin.deleteItem}
                   </button>

@@ -7,43 +7,43 @@ export default function Footer() {
   const { t } = useLocale();
 
   return (
-    <footer id="visit" className="bg-espresso px-6 py-20 text-cream md:px-12 md:py-28">
+    <footer id="visit" className="bg-espresso-deep px-6 py-20 text-[#f3e6d8] md:px-12 md:py-28">
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-end">
           <div>
-            <p className="mb-4 text-xs uppercase tracking-[0.28em] text-cream/50">
+            <p className="mb-4 text-xs uppercase tracking-[0.28em] text-[#f3e6d8]/50">
               {t.footer.visitUs}
             </p>
             <h2 className="font-display max-w-md text-3xl italic leading-tight md:text-4xl">
               {t.footer.comeSit}
             </h2>
           </div>
-          <MagneticButton className="!bg-cream !text-espresso hover:!bg-cream-soft">
+          <MagneticButton className="!bg-[#f3e6d8] !text-espresso-deep hover:!bg-white">
             {t.footer.findLocation}
           </MagneticButton>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-10 border-t border-cream/15 pt-10 text-sm text-cream/60 sm:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-10 border-t border-[#f3e6d8]/15 pt-10 text-sm text-[#f3e6d8]/60 sm:grid-cols-3">
           <div>
-            <p className="mb-2 text-cream/90">{t.footer.hours}</p>
+            <p className="mb-2 text-[#f3e6d8]/90">{t.footer.hours}</p>
             <p>{t.footer.hoursWeekday}</p>
             <p>{t.footer.hoursWeekend}</p>
           </div>
           <div>
-            <p className="mb-2 text-cream/90">{t.footer.address}</p>
+            <p className="mb-2 text-[#f3e6d8]/90">{t.footer.address}</p>
             <p>14 Roastery Lane</p>
             <p>Portland, OR</p>
           </div>
           <div>
-            <p className="mb-2 text-cream/90">{t.footer.follow}</p>
+            <p className="mb-2 text-[#f3e6d8]/90">{t.footer.follow}</p>
             <p>Instagram</p>
             <p>Journal</p>
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col-reverse items-start justify-between gap-4 text-xs text-cream/40 sm:flex-row sm:items-center">
+        <div className="mt-16 flex flex-col-reverse items-start justify-between gap-4 text-xs text-[#f3e6d8]/40 sm:flex-row sm:items-center">
           <p>© {new Date().getFullYear()} Aroura Coffee. {t.footer.rights}</p>
-          <p className="font-display italic text-cream/70">Aroura</p>
+          <p className="font-display italic text-[#f3e6d8]/70">Aroura</p>
         </div>
       </div>
     </footer>

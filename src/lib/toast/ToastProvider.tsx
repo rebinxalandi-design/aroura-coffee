@@ -44,10 +44,10 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`pointer-events-auto max-w-md rounded-[3px] border px-5 py-3 text-sm shadow-xl backdrop-blur-sm ${
+            className={`pointer-events-auto max-w-md rounded-2xl border px-5 py-3 text-sm shadow-xl backdrop-blur-xl backdrop-saturate-150 ${
               toast.variant === "success"
                 ? "border-gold/30 bg-espresso text-cream"
-                : "border-red-900/30 bg-red-900 text-cream"
+                : "border-danger-fill/30 bg-danger-fill text-white"
             }`}
           >
             {toast.message}

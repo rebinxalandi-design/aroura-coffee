@@ -103,7 +103,7 @@ export default function OrderModal({
             />
           </label>
 
-          {error && <p className="text-sm text-red-700">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <div className="mt-2 flex items-center gap-3">
             <button

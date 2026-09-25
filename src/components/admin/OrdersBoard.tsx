@@ -10,8 +10,8 @@ const POLL_INTERVAL_MS = 5000;
 
 const STATUS_STYLES: Record<OrderStatus, string> = {
   pending: "bg-gold/15 text-wood border-gold/30",
-  accepted: "bg-emerald-700/10 text-emerald-800 border-emerald-700/30",
-  rejected: "bg-red-700/10 text-red-800 border-red-700/30",
+  accepted: "bg-success-soft text-success border-success-border",
+  rejected: "bg-danger-soft text-danger border-danger-border",
   completed: "bg-espresso/10 text-espresso border-espresso/25",
 };
 
@@ -135,7 +135,7 @@ export default function OrdersBoard() {
                     <button
                       onClick={() => updateStatus(order.id, "rejected")}
                       disabled={updatingId === order.id}
-                      className="rounded-full border border-red-800/30 px-4 py-2 text-xs text-red-800 transition-colors hover:bg-red-800 hover:text-cream disabled:opacity-50"
+                      className="rounded-full border border-danger/30 px-4 py-2 text-xs text-danger transition-colors hover:bg-danger-fill hover:text-white disabled:opacity-50"
                     >
                       {t.admin.reject}
                     </button>

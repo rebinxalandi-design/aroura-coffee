@@ -110,7 +110,7 @@ export default function AccountsManager({
           {submitting ? t.admin.saving : t.admin.createAdmin}
         </button>
       </form>
-      {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
+      {error && <p className="mt-2 text-sm text-danger">{error}</p>}
 
       <div className="mt-8 flex flex-col gap-2">
         {admins.map((a) => (
@@ -127,7 +127,7 @@ export default function AccountsManager({
             {a.id !== currentUserId && (
               <button
                 onClick={() => handleDelete(a.id)}
-                className="text-xs uppercase tracking-[0.1em] text-red-800 underline decoration-red-800/30 underline-offset-4 hover:decoration-red-800"
+                className="text-xs uppercase tracking-[0.1em] text-danger underline decoration-danger/30 underline-offset-4 hover:decoration-danger"
               >
                 {t.admin.deleteItem}
               </button>
