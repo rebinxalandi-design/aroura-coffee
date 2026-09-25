@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Playfair_Display, Inter, Vazirmatn } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import CustomCursor from "@/components/CustomCursor";
@@ -6,6 +7,31 @@ import LocaleProvider from "@/lib/i18n/LocaleProvider";
 import ThemeProvider from "@/lib/theme/ThemeProvider";
 import ToastProvider from "@/lib/toast/ToastProvider";
 import LanguageModal from "@/components/LanguageModal";
+
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["500", "600", "700"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+// Vazirmatn covers both roles (display + body) for Persian: Latin serif
+// italics have no Arabic/Persian glyphs, so fa content needs its own
+// typeface family rather than falling through to the Latin fonts above.
+const vazirmatn = Vazirmatn({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-vazirmatn",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Aroura Coffee — Taste the Craft",
@@ -35,7 +61,11 @@ const INIT_SCRIPT = `
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`h-full antialiased ${playfairDisplay.variable} ${inter.variable} ${vazirmatn.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: INIT_SCRIPT }} />
       </head>
