@@ -18,6 +18,22 @@
   --ease-smooth: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* Dark mode: deep espresso / near-black with warm gold accents. */
+:root[data-theme="dark"] {
+  --color-cream: #1c1512;
+  --color-cream-soft: #241a15;
+  --color-beige: #2e2119;
+  --color-wood: #c9a06a;
+  --color-espresso: #f3e6d8;
+  --color-espresso-deep: #100b09;
+  --color-coffee: #d8b184;
+  --color-ink: #f3e6d8;
+  --color-gold: #d9a854;
+
+  --background: var(--color-cream);
+  --foreground: var(--color-ink);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -55,6 +71,7 @@ body {
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s var(--ease-smooth), color 0.4s var(--ease-smooth);
 }
 
 .font-display {

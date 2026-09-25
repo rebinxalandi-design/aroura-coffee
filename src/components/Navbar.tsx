@@ -2,21 +2,25 @@
 
 import { useEffect, useState } from "react";
 import MagneticButton from "./MagneticButton";
-
-const LINKS = [
-  { label: "Menu", href: "#menu" },
-  { label: "Our Craft", href: "#craft" },
-  { label: "Visit", href: "#visit" },
-];
+import ThemeToggle from "./ThemeToggle";
+import LocaleSwitcher from "./LocaleSwitcher";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const { t } = useLocale();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const LINKS = [
+    { label: t.nav.menu, href: "#menu" },
+    { label: t.nav.craft, href: "#craft" },
+    { label: t.nav.visit, href: "#visit" },
+  ];
 
   return (
     <header
@@ -42,17 +46,29 @@ export default function Navbar() {
           </a>
         ))}
       </nav>
-      <MagneticButton className="hidden !px-6 !py-3 text-xs md:inline-flex">
-        Order Now
-      </MagneticButton>
-      <button
-        data-cursor-hover
-        aria-label="Menu"
-        className="flex flex-col gap-1.5 md:hidden"
-      >
-        <span className="h-px w-6 bg-espresso" />
-        <span className="h-px w-6 bg-espresso" />
-      </button>
+      <div className="flex items-center gap-3">
+        <LocaleSwitcher className="hidden md:flex" />
+        <ThemeToggle />
+        <MagneticButton
+          className="hidden !px-6 !py-3 text-xs md:inline-flex"
+          onClick={() => {
+            document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          {t.nav.orderNow}
+        </MagneticButton>
+        <button
+          data-cursor-hover
+          aria-label="Menu"
+          className="flex flex-col gap-1.5 md:hidden"
+          onClick={() => {
+            document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          <span className="h-px w-6 bg-espresso" />
+          <span className="h-px w-6 bg-espresso" />
+        </button>
+      </div>
     </header>
   );
 }

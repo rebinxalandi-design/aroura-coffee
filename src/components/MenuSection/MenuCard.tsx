@@ -3,11 +3,20 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { gsap } from "@/lib/gsap";
-import type { MenuItem } from "./menuData";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { formatToman } from "@/lib/currency";
+import type { MenuItem } from "@/lib/types";
 
-export default function MenuCard({ item }: { item: MenuItem }) {
+export default function MenuCard({
+  item,
+  onOrder,
+}: {
+  item: MenuItem;
+  onOrder: () => void;
+}) {
   const cardRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
+  const { locale, t } = useLocale();
 
   const onEnter = () => {
     gsap.to(imgRef.current, { scale: 1.08, duration: 0.7, ease: "power3.out" });
@@ -15,6 +24,10 @@ export default function MenuCard({ item }: { item: MenuItem }) {
   const onLeave = () => {
     gsap.to(imgRef.current, { scale: 1, duration: 0.7, ease: "power3.out" });
   };
+
+  const name = item.name[locale];
+  const description = item.description[locale];
+  const tag = item.tag[locale];
 
   return (
     <div
@@ -35,24 +48,34 @@ export default function MenuCard({ item }: { item: MenuItem }) {
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-espresso-deep/35 via-transparent to-espresso-deep/10" />
         </div>
-        <span className="absolute left-4 top-4 rounded-full bg-cream/90 px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-espresso/70 shadow-sm backdrop-blur-sm">
-          {item.tag}
-        </span>
+        {tag && (
+          <span className="absolute left-4 top-4 rounded-full bg-cream/90 px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-espresso/70 shadow-sm backdrop-blur-sm">
+            {tag}
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col justify-between p-6">
         <div>
           <div className="flex items-baseline justify-between gap-4">
             <h4 className="font-display text-xl italic text-espresso">
-              {item.name}
+              {name}
             </h4>
             <span className="whitespace-nowrap text-sm font-medium text-wood">
-              {item.price}
+              {formatToman(item.priceToman, locale)}
             </span>
           </div>
           <p className="mt-2 text-sm leading-relaxed text-espresso/60">
-            {item.description}
+            {description}
           </p>
         </div>
+        <button
+          type="button"
+          onClick={onOrder}
+          data-cursor-hover
+          className="mt-6 inline-flex items-center justify-center rounded-full border border-espresso/25 px-5 py-2.5 text-xs uppercase tracking-[0.15em] text-espresso transition-colors duration-300 hover:border-espresso hover:bg-espresso hover:text-cream"
+        >
+          {t.menu.order}
+        </button>
       </div>
       <div className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-espresso transition-transform duration-500 group-hover:scale-x-100" />
     </div>
