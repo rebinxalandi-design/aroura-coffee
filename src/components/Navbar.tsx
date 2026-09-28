@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MagneticButton from "./MagneticButton";
 import ThemeToggle from "./ThemeToggle";
 import LocaleSwitcher from "./LocaleSwitcher";
@@ -10,6 +10,7 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const toggleBtnRef = useRef<HTMLButtonElement>(null);
   const { t } = useLocale();
 
   useEffect(() => {
@@ -22,7 +23,16 @@ export default function Navbar() {
   // the mobile breakpoint, so it can't be left open behind a desktop layout.
   useEffect(() => {
     if (!menuOpen) return;
-    const close = () => setMenuOpen(false);
+    // A capture-phase listener runs before the toggle button's own onClick
+    // (which stopPropagation() can't block, since that only stops
+    // bubble-phase propagation to ancestors, not an earlier capture-phase
+    // listener on document). Without the ref check here, clicking the
+    // button to close the drawer would close it via this handler and then
+    // immediately reopen it via the button's own toggle in the same click.
+    const close = (e: MouseEvent) => {
+      if (toggleBtnRef.current?.contains(e.target as Node)) return;
+      setMenuOpen(false);
+    };
     const onResize = () => {
       if (window.innerWidth >= 768) setMenuOpen(false);
     };
@@ -76,10 +86,11 @@ export default function Navbar() {
           {t.nav.orderNow}
         </MagneticButton>
         <button
+          ref={toggleBtnRef}
           data-cursor-hover
           aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
           aria-expanded={menuOpen}
-          className="relative flex h-9 w-9 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="relative flex h-11 w-11 flex-col items-center justify-center gap-1.5 md:hidden"
           onClick={(e) => {
             e.stopPropagation();
             setMenuOpen((v) => !v);

@@ -72,7 +72,7 @@ export default function MenuCard({
           type="button"
           onClick={onOrder}
           data-cursor-hover
-          className="mt-6 inline-flex items-center justify-center rounded-full border border-espresso/25 px-5 py-2.5 text-xs uppercase tracking-[0.15em] text-espresso transition-colors duration-300 hover:border-espresso hover:bg-espresso hover:text-cream"
+          className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full border border-espresso/25 px-5 text-xs uppercase tracking-[0.15em] text-espresso transition-colors duration-300 hover:border-espresso hover:bg-espresso hover:text-cream"
         >
           {t.menu.order}
         </button>

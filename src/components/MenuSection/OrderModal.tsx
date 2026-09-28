@@ -52,14 +52,14 @@ export default function OrderModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-espresso-deep/70 px-6 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-espresso-deep/70 px-6 py-10 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl border border-white/25 bg-cream/75 p-8 shadow-2xl backdrop-blur-2xl backdrop-saturate-150"
+        className="max-h-full w-full max-w-md overflow-y-auto rounded-2xl border border-white/25 bg-cream/75 p-8 shadow-2xl backdrop-blur-2xl backdrop-saturate-150"
       >
         <h3 className="font-display text-2xl italic text-espresso">
           {t.orderModal.title}

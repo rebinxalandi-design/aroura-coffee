@@ -32,14 +32,17 @@ export default function CoffeeHero() {
     if (!section || !sceneWrap) return;
 
     const q = gsap.utils.selector(section);
-    const isMobile = window.innerWidth < 768;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: isMobile ? "+=300%" : "+=500%",
+          // A function (re-evaluated on every ScrollTrigger refresh, e.g. a
+          // phone rotating or a window resize) instead of a value baked in
+          // from window.innerWidth at mount time, which would otherwise
+          // stick with whatever orientation/width the page first loaded in.
+          end: () => (window.innerWidth < 768 ? "+=220%" : "+=500%"),
           scrub: 1,
           pin: true,
           // The page's root wrapper is a flex column (see app/page.tsx). GSAP's

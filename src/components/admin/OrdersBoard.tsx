@@ -132,14 +132,14 @@ export default function OrdersBoard() {
                     <button
                       onClick={() => updateStatus(order.id, "accepted")}
                       disabled={updatingId === order.id}
-                      className="rounded-full bg-espresso px-4 py-2 text-xs text-cream transition-colors hover:bg-espresso-deep disabled:opacity-50"
+                      className="min-h-11 rounded-full bg-espresso px-4 text-xs text-cream transition-colors hover:bg-espresso-deep disabled:opacity-50"
                     >
                       {t.admin.accept}
                     </button>
                     <button
                       onClick={() => updateStatus(order.id, "rejected")}
                       disabled={updatingId === order.id}
-                      className="rounded-full border border-danger/30 px-4 py-2 text-xs text-danger transition-colors hover:bg-danger-fill hover:text-white disabled:opacity-50"
+                      className="min-h-11 rounded-full border border-danger/30 px-4 text-xs text-danger transition-colors hover:bg-danger-fill hover:text-white disabled:opacity-50"
                     >
                       {t.admin.reject}
                     </button>
@@ -149,7 +149,7 @@ export default function OrdersBoard() {
                   <button
                     onClick={() => updateStatus(order.id, "completed")}
                     disabled={updatingId === order.id}
-                    className="rounded-full border border-espresso/25 px-4 py-2 text-xs text-espresso transition-colors hover:bg-espresso hover:text-cream disabled:opacity-50"
+                    className="min-h-11 rounded-full border border-espresso/25 px-4 text-xs text-espresso transition-colors hover:bg-espresso hover:text-cream disabled:opacity-50"
                   >
                     {t.admin.complete}
                   </button>

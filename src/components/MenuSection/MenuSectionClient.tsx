@@ -85,14 +85,14 @@ export default function MenuSectionClient({ items }: { items: MenuItem[] }) {
       </div>
 
       {filters.length > 2 && (
-        <div className="mx-auto mt-10 flex max-w-4xl flex-wrap items-center justify-center gap-2">
+        <div className="mx-auto mt-10 flex max-w-4xl flex-wrap items-center justify-center gap-2.5">
           {filters.map((f) => (
             <button
               key={f.value}
               type="button"
               onClick={() => setFilter(f.value)}
               data-cursor-hover
-              className={`rounded-full border px-5 py-2 text-xs uppercase tracking-[0.15em] transition-colors duration-300 ${
+              className={`flex min-h-11 items-center rounded-full border px-5 text-xs uppercase tracking-[0.15em] transition-colors duration-300 ${
                 filter === f.value
                   ? "border-espresso bg-espresso text-cream"
                   : "border-espresso/20 text-espresso/70 hover:border-espresso/50 hover:text-espresso"

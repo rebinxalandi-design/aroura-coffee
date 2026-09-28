@@ -51,8 +51,14 @@ export default function StoryPanel({
         }
       );
 
+      // Mobile panels are short and stacked, so this parallax scrubs faster
+      // relative to a quick swipe than it does on a tall desktop viewport --
+      // easing it back on narrow screens keeps the motion smooth instead of
+      // jittery, without removing the effect entirely.
+      const isMobile = window.innerWidth < 768;
+
       gsap.to(imageRef.current, {
-        yPercent: -10,
+        yPercent: isMobile ? -4 : -10,
         ease: "none",
         scrollTrigger: {
           trigger: root,
