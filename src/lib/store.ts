@@ -1,15 +1,6 @@
-import { promises as fs } from "fs";
-import path from "path";
-import { randomUUID } from "crypto";
 import bcrypt from "bcryptjs";
-import type { AdminUser, MenuItem, Order } from "./types";
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const FILES = {
-  admins: path.join(DATA_DIR, "admins.json"),
-  menu: path.join(DATA_DIR, "menu.json"),
-  orders: path.join(DATA_DIR, "orders.json"),
-} as const;
+import { supabase } from "./supabase";
+import type { AdminUser, MenuCategory, MenuItem, Order, OrderStatus } from "./types";
 
 const DEFAULT_SUPER_ADMIN_USERNAME = "superadmin";
 const DEFAULT_SUPER_ADMIN_PASSWORD = "Aroura@2025";
@@ -185,74 +176,124 @@ const SEED_MENU_ITEMS: Omit<MenuItem, "id" | "createdAt" | "updatedAt">[] = [
   },
 ];
 
-async function ensureDataDir() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+// ---- Row <-> domain type mapping ----
+// Postgres/Supabase rows use snake_case column names; the rest of the app
+// (types.ts, every component) uses the camelCase MenuItem/Order/AdminUser
+// shapes that predate this migration from a JSON file store. Mapping here
+// keeps every other file in the codebase completely unaware of the switch.
+
+interface AdminRow {
+  id: string;
+  username: string;
+  password_hash: string;
+  role: AdminUser["role"];
+  created_at: string;
 }
 
-/** Atomic write: write to a temp file then rename, to avoid corruption from concurrent writes. */
-async function atomicWrite(filePath: string, data: unknown) {
-  await ensureDataDir();
-  const tmpPath = `${filePath}.${randomUUID()}.tmp`;
-  await fs.writeFile(tmpPath, JSON.stringify(data, null, 2), "utf-8");
-  await fs.rename(tmpPath, filePath);
+function adminFromRow(row: AdminRow): AdminUser {
+  return {
+    id: row.id,
+    username: row.username,
+    passwordHash: row.password_hash,
+    role: row.role,
+    createdAt: row.created_at,
+  };
 }
 
-async function readJson<T>(filePath: string, fallback: T): Promise<T> {
-  try {
-    const raw = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
+interface MenuItemRow {
+  id: string;
+  name: MenuItem["name"];
+  description: MenuItem["description"];
+  price_toman: number;
+  tag: MenuItem["tag"];
+  category: MenuCategory;
+  image: MenuItem["image"];
+  created_at: string;
+  updated_at: string;
 }
 
-// Simple in-process write queue per file to serialize concurrent writes from
-// the same server instance (atomic rename protects against partial writes;
-// this queue protects against lost updates from interleaved read-modify-write).
-const writeQueues = new Map<string, Promise<unknown>>();
-function queueWrite<T>(key: string, fn: () => Promise<T>): Promise<T> {
-  const prev = writeQueues.get(key) ?? Promise.resolve();
-  const next = prev.then(fn, fn);
-  writeQueues.set(
-    key,
-    next.catch(() => undefined)
-  );
-  return next;
+function menuItemFromRow(row: MenuItemRow): MenuItem {
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    priceToman: row.price_toman,
+    tag: row.tag,
+    category: row.category,
+    image: row.image,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
 }
 
+interface OrderRow {
+  id: string;
+  item_id: string;
+  item_name: Order["itemName"];
+  price_toman: number;
+  customer_name: string;
+  note: string | null;
+  table_or_location: string | null;
+  status: OrderStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+function orderFromRow(row: OrderRow): Order {
+  return {
+    id: row.id,
+    itemId: row.item_id,
+    itemName: row.item_name,
+    priceToman: row.price_toman,
+    customerName: row.customer_name,
+    note: row.note ?? undefined,
+    tableOrLocation: row.table_or_location ?? undefined,
+    status: row.status,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+// ---- One-time seeding ----
+// Runs at most once per server process (module-level flag), and each check
+// is a cheap "is this table empty" query -- safe to call from every list*()
+// so a fresh database seeds itself on first use without a separate manual
+// migration step.
 let seeded = false;
 async function ensureSeeded() {
   if (seeded) return;
-  await ensureDataDir();
 
-  const admins = await readJson<AdminUser[]>(FILES.admins, []);
-  if (admins.length === 0) {
+  const { count: adminCount, error: adminCountError } = await supabase
+    .from("admins")
+    .select("*", { count: "exact", head: true });
+  if (adminCountError) throw adminCountError;
+
+  if (!adminCount) {
     const passwordHash = await bcrypt.hash(DEFAULT_SUPER_ADMIN_PASSWORD, 10);
-    const superAdmin: AdminUser = {
-      id: randomUUID(),
+    const { error } = await supabase.from("admins").insert({
       username: DEFAULT_SUPER_ADMIN_USERNAME,
-      passwordHash,
+      password_hash: passwordHash,
       role: "super_admin",
-      createdAt: new Date().toISOString(),
-    };
-    await atomicWrite(FILES.admins, [superAdmin]);
+    });
+    if (error) throw error;
   }
 
-  const menu = await readJson<MenuItem[]>(FILES.menu, []);
-  if (menu.length === 0) {
-    const now = new Date().toISOString();
-    const seededMenu: MenuItem[] = SEED_MENU_ITEMS.map((item) => ({
-      ...item,
-      id: randomUUID(),
-      createdAt: now,
-      updatedAt: now,
+  const { count: menuCount, error: menuCountError } = await supabase
+    .from("menu_items")
+    .select("*", { count: "exact", head: true });
+  if (menuCountError) throw menuCountError;
+
+  if (!menuCount) {
+    const rows = SEED_MENU_ITEMS.map((item) => ({
+      name: item.name,
+      description: item.description,
+      price_toman: item.priceToman,
+      tag: item.tag,
+      category: item.category,
+      image: item.image,
     }));
-    await atomicWrite(FILES.menu, seededMenu);
-  }
-
-  const orders = await readJson<Order[] | null>(FILES.orders, null);
-  if (orders === null) {
-    await atomicWrite(FILES.orders, []);
+    const { error } = await supabase.from("menu_items").insert(rows);
+    if (error) throw error;
   }
 
   seeded = true;
@@ -261,23 +302,33 @@ async function ensureSeeded() {
 // ---- Admins ----
 export async function listAdmins(): Promise<AdminUser[]> {
   await ensureSeeded();
-  return readJson<AdminUser[]>(FILES.admins, []);
+  const { data, error } = await supabase.from("admins").select("*");
+  if (error) throw error;
+  return (data as AdminRow[]).map(adminFromRow);
 }
 
 export async function findAdminByUsername(
   username: string
 ): Promise<AdminUser | undefined> {
-  const admins = await listAdmins();
-  return admins.find(
-    (a) => a.username.toLowerCase() === username.toLowerCase()
-  );
+  await ensureSeeded();
+  const { data, error } = await supabase
+    .from("admins")
+    .select("*")
+    .ilike("username", username)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? adminFromRow(data as AdminRow) : undefined;
 }
 
-export async function findAdminById(
-  id: string
-): Promise<AdminUser | undefined> {
-  const admins = await listAdmins();
-  return admins.find((a) => a.id === id);
+export async function findAdminById(id: string): Promise<AdminUser | undefined> {
+  await ensureSeeded();
+  const { data, error } = await supabase
+    .from("admins")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? adminFromRow(data as AdminRow) : undefined;
 }
 
 export async function createAdmin(input: {
@@ -285,137 +336,139 @@ export async function createAdmin(input: {
   password: string;
   role: AdminUser["role"];
 }): Promise<AdminUser> {
-  return queueWrite("admins", async () => {
-    const admins = await readJson<AdminUser[]>(FILES.admins, []);
-    if (
-      admins.some(
-        (a) => a.username.toLowerCase() === input.username.toLowerCase()
-      )
-    ) {
-      throw new Error("Username already exists");
-    }
-    const passwordHash = await bcrypt.hash(input.password, 10);
-    const newAdmin: AdminUser = {
-      id: randomUUID(),
+  const existing = await findAdminByUsername(input.username);
+  if (existing) {
+    throw new Error("Username already exists");
+  }
+  const passwordHash = await bcrypt.hash(input.password, 10);
+  const { data, error } = await supabase
+    .from("admins")
+    .insert({
       username: input.username,
-      passwordHash,
+      password_hash: passwordHash,
       role: input.role,
-      createdAt: new Date().toISOString(),
-    };
-    await atomicWrite(FILES.admins, [...admins, newAdmin]);
-    return newAdmin;
-  });
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return adminFromRow(data as AdminRow);
 }
 
 export async function deleteAdmin(id: string): Promise<void> {
-  await queueWrite("admins", async () => {
-    const admins = await readJson<AdminUser[]>(FILES.admins, []);
-    await atomicWrite(
-      FILES.admins,
-      admins.filter((a) => a.id !== id)
-    );
-  });
+  const { error } = await supabase.from("admins").delete().eq("id", id);
+  if (error) throw error;
 }
 
 // ---- Menu ----
 export async function listMenuItems(): Promise<MenuItem[]> {
   await ensureSeeded();
-  return readJson<MenuItem[]>(FILES.menu, []);
+  const { data, error } = await supabase
+    .from("menu_items")
+    .select("*")
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return (data as MenuItemRow[]).map(menuItemFromRow);
 }
 
 export async function findMenuItem(id: string): Promise<MenuItem | undefined> {
-  const items = await listMenuItems();
-  return items.find((i) => i.id === id);
+  const { data, error } = await supabase
+    .from("menu_items")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? menuItemFromRow(data as MenuItemRow) : undefined;
 }
 
 export async function createMenuItem(
   input: Omit<MenuItem, "id" | "createdAt" | "updatedAt">
 ): Promise<MenuItem> {
-  return queueWrite("menu", async () => {
-    const items = await readJson<MenuItem[]>(FILES.menu, []);
-    const now = new Date().toISOString();
-    const newItem: MenuItem = {
-      ...input,
-      id: randomUUID(),
-      createdAt: now,
-      updatedAt: now,
-    };
-    await atomicWrite(FILES.menu, [...items, newItem]);
-    return newItem;
-  });
+  const { data, error } = await supabase
+    .from("menu_items")
+    .insert({
+      name: input.name,
+      description: input.description,
+      price_toman: input.priceToman,
+      tag: input.tag,
+      category: input.category,
+      image: input.image,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return menuItemFromRow(data as MenuItemRow);
 }
 
 export async function updateMenuItem(
   id: string,
   patch: Partial<Omit<MenuItem, "id" | "createdAt">>
 ): Promise<MenuItem | undefined> {
-  return queueWrite("menu", async () => {
-    const items = await readJson<MenuItem[]>(FILES.menu, []);
-    const idx = items.findIndex((i) => i.id === id);
-    if (idx === -1) return undefined;
-    const updated: MenuItem = {
-      ...items[idx],
-      ...patch,
-      updatedAt: new Date().toISOString(),
-    };
-    items[idx] = updated;
-    await atomicWrite(FILES.menu, items);
-    return updated;
-  });
+  const row: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (patch.name !== undefined) row.name = patch.name;
+  if (patch.description !== undefined) row.description = patch.description;
+  if (patch.priceToman !== undefined) row.price_toman = patch.priceToman;
+  if (patch.tag !== undefined) row.tag = patch.tag;
+  if (patch.category !== undefined) row.category = patch.category;
+  if (patch.image !== undefined) row.image = patch.image;
+
+  const { data, error } = await supabase
+    .from("menu_items")
+    .update(row)
+    .eq("id", id)
+    .select()
+    .maybeSingle();
+  if (error) throw error;
+  return data ? menuItemFromRow(data as MenuItemRow) : undefined;
 }
 
 export async function deleteMenuItem(id: string): Promise<void> {
-  await queueWrite("menu", async () => {
-    const items = await readJson<MenuItem[]>(FILES.menu, []);
-    await atomicWrite(
-      FILES.menu,
-      items.filter((i) => i.id !== id)
-    );
-  });
+  const { error } = await supabase.from("menu_items").delete().eq("id", id);
+  if (error) throw error;
 }
 
 // ---- Orders ----
 export async function listOrders(): Promise<Order[]> {
   await ensureSeeded();
-  const orders = await readJson<Order[]>(FILES.orders, []);
-  return orders.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data as OrderRow[]).map(orderFromRow);
 }
 
 export async function createOrder(
   input: Omit<Order, "id" | "status" | "createdAt" | "updatedAt">
 ): Promise<Order> {
-  return queueWrite("orders", async () => {
-    const orders = await readJson<Order[]>(FILES.orders, []);
-    const now = new Date().toISOString();
-    const newOrder: Order = {
-      ...input,
-      id: randomUUID(),
+  const { data, error } = await supabase
+    .from("orders")
+    .insert({
+      item_id: input.itemId,
+      item_name: input.itemName,
+      price_toman: input.priceToman,
+      customer_name: input.customerName,
+      note: input.note ?? null,
+      table_or_location: input.tableOrLocation ?? null,
       status: "pending",
-      createdAt: now,
-      updatedAt: now,
-    };
-    await atomicWrite(FILES.orders, [...orders, newOrder]);
-    return newOrder;
-  });
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return orderFromRow(data as OrderRow);
 }
 
 export async function updateOrderStatus(
   id: string,
-  status: Order["status"]
+  status: OrderStatus
 ): Promise<Order | undefined> {
-  return queueWrite("orders", async () => {
-    const orders = await readJson<Order[]>(FILES.orders, []);
-    const idx = orders.findIndex((o) => o.id === id);
-    if (idx === -1) return undefined;
-    const updated: Order = {
-      ...orders[idx],
-      status,
-      updatedAt: new Date().toISOString(),
-    };
-    orders[idx] = updated;
-    await atomicWrite(FILES.orders, orders);
-    return updated;
-  });
+  const { data, error } = await supabase
+    .from("orders")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
+  if (error) throw error;
+  return data ? orderFromRow(data as OrderRow) : undefined;
 }
 
 export const SEEDED_SUPER_ADMIN_CREDENTIALS = {

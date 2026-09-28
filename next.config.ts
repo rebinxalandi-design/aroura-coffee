@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        // Supabase Storage public bucket URLs -- admin-uploaded menu
+        // photos live at https://<project-ref>.supabase.co/storage/v1/....
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
     ],
   },
   turbopack: {

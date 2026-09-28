@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
 import { randomUUID } from "crypto";
 import { getCurrentUser } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES: Record<string, string> = {
@@ -10,6 +9,7 @@ const ALLOWED_TYPES: Record<string, string> = {
   "image/png": "png",
   "image/webp": "webp",
 };
+const BUCKET = "menu-photos";
 
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();
@@ -58,12 +58,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "invalid_image_content" }, { status: 400 });
   }
 
-  const uploadsDir = path.join(process.cwd(), "public", "uploads");
-  await fs.mkdir(uploadsDir, { recursive: true });
-
   const filename = `${randomUUID()}.${extension}`;
-  const filePath = path.join(uploadsDir, filename);
-  await fs.writeFile(filePath, buffer);
+  const { error: uploadError } = await supabase.storage
+    .from(BUCKET)
+    .upload(filename, buffer, { contentType: file.type });
+  if (uploadError) {
+    return NextResponse.json({ error: "upload_failed" }, { status: 500 });
+  }
 
-  return NextResponse.json({ src: `/uploads/${filename}` }, { status: 201 });
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(filename);
+  return NextResponse.json({ src: data.publicUrl }, { status: 201 });
 }
