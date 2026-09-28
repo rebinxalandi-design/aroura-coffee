@@ -1,12 +1,15 @@
 "use client";
 
-const STAGES = ["Beans", "Grind", "Espresso", "Milk", "Latte", "Serve"];
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function StageIndicator({ activeIndex }: { activeIndex: number }) {
+  const { t } = useLocale();
+  const STAGES = t.hero.stageIndicator;
+
   return (
     <div className="pointer-events-none fixed bottom-8 left-1/2 z-30 hidden -translate-x-1/2 items-center gap-3 md:flex">
       {STAGES.map((stage, i) => (
-        <div key={stage} className="flex items-center gap-3">
+        <div key={i} className="flex items-center gap-3">
           <div className="flex flex-col items-center gap-2">
             <span
               className={`h-1.5 w-1.5 rounded-full transition-all duration-500 ${

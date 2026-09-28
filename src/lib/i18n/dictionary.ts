@@ -7,6 +7,8 @@ export const dictionary = {
       craft: "Our Craft",
       visit: "Visit",
       orderNow: "Order Now",
+      openMenu: "Menu",
+      closeMenu: "Close menu",
     },
     langModal: {
       title: "Welcome",
@@ -36,6 +38,7 @@ export const dictionary = {
       brand: "Aroura Coffee",
       finalTitle: "Taste the Craft",
       cta: "Discover Our Coffee",
+      stageIndicator: ["Beans", "Grind", "Espresso", "Milk", "Latte", "Serve"],
     },
     story: {
       eyebrow: "Our Craft",
@@ -104,6 +107,8 @@ export const dictionary = {
       hoursWeekday: "Mon – Fri · 7am – 6pm",
       hoursWeekend: "Sat – Sun · 8am – 5pm",
       address: "Address",
+      addressLine1: "14 Roastery Lane",
+      addressLine2: "Portland, OR",
       follow: "Follow",
       rights: "All rights reserved.",
     },
@@ -196,6 +201,8 @@ export const dictionary = {
       craft: "هنر ما",
       visit: "بازدید",
       orderNow: "سفارش دهید",
+      openMenu: "منو",
+      closeMenu: "بستن منو",
     },
     langModal: {
       title: "خوش آمدید",
@@ -225,6 +232,7 @@ export const dictionary = {
       brand: "کافه آئورا",
       finalTitle: "طعم هنر قهوه",
       cta: "قهوه‌های ما را ببینید",
+      stageIndicator: ["دانه", "آسیاب", "اسپرسو", "شیر", "لاته", "سرو"],
     },
     story: {
       eyebrow: "هنر ما",
@@ -293,6 +301,8 @@ export const dictionary = {
       hoursWeekday: "شنبه تا چهارشنبه · ۷ صبح تا ۶ عصر",
       hoursWeekend: "پنجشنبه و جمعه · ۸ صبح تا ۵ عصر",
       address: "آدرس",
+      addressLine1: "خیابان روستری، پلاک 14",
+      addressLine2: "پورتلند، اورگان",
       follow: "دنبال کنید",
       rights: "تمامی حقوق محفوظ است.",
     },

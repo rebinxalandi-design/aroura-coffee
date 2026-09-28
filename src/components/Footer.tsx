@@ -32,8 +32,8 @@ export default function Footer() {
           </div>
           <div>
             <p className="mb-2 text-[#f3e6d8]/90">{t.footer.address}</p>
-            <p>14 Roastery Lane</p>
-            <p>Portland, OR</p>
+            <p>{t.footer.addressLine1}</p>
+            <p>{t.footer.addressLine2}</p>
           </div>
           <div>
             <p className="mb-2 text-[#f3e6d8]/90">{t.footer.follow}</p>

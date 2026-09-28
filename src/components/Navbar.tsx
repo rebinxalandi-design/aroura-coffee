@@ -77,7 +77,7 @@ export default function Navbar() {
         </MagneticButton>
         <button
           data-cursor-hover
-          aria-label={menuOpen ? "Close menu" : "Menu"}
+          aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
           aria-expanded={menuOpen}
           className="relative flex h-9 w-9 flex-col items-center justify-center gap-1.5 md:hidden"
           onClick={(e) => {
