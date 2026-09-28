@@ -8,7 +8,7 @@ export interface AdminUser {
   createdAt: string;
 }
 
-export type MenuCategory = "coffee" | "espresso" | "cake" | "pastry" | "other";
+export type MenuCategory = "coffee" | "espresso" | "cake" | "pastry" | "juice" | "other";
 
 export interface MenuItem {
   id: string;

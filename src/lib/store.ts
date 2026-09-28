@@ -99,6 +99,90 @@ const SEED_MENU_ITEMS: Omit<MenuItem, "id" | "createdAt" | "updatedAt">[] = [
       alt: "A glass of iced cold brew coffee on a wooden table with brewing equipment behind it",
     },
   },
+  {
+    name: { en: "Red Velvet Slice", fa: "برش رد ولوت" },
+    description: {
+      en: "Layered red velvet sponge with cream cheese frosting.",
+      fa: "کیک اسفنجی رد ولوت لایه‌ای با روکش خامه پنیر.",
+    },
+    priceToman: 120000,
+    tag: { en: "Bakery", fa: "شیرینی‌پزی" },
+    category: "cake",
+    image: {
+      src: "https://images.unsplash.com/photo-1586985289906-406988974504?w=1200&q=80&auto=format&fit=crop",
+      alt: "A slice of red velvet cake with cream cheese frosting on a plate",
+    },
+  },
+  {
+    name: { en: "Chocolate Fudge Cake", fa: "کیک فاج شکلاتی" },
+    description: {
+      en: "Dense dark chocolate layers, warm fudge glaze.",
+      fa: "لایه‌های شکلات تلخ فشرده با گلیز فاج گرم.",
+    },
+    priceToman: 130000,
+    tag: { en: "Bakery", fa: "شیرینی‌پزی" },
+    category: "cake",
+    image: {
+      src: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=1200&q=80&auto=format&fit=crop",
+      alt: "A rich chocolate fudge cake slice with glossy glaze",
+    },
+  },
+  {
+    name: { en: "Lemon Cheesecake", fa: "چیزکیک لیمو" },
+    description: {
+      en: "Baked cheesecake with a bright lemon curd top.",
+      fa: "چیزکیک پخته‌شده با روکش لیموی تازه.",
+    },
+    priceToman: 125000,
+    tag: { en: "Bakery", fa: "شیرینی‌پزی" },
+    category: "cake",
+    image: {
+      src: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=1200&q=80&auto=format&fit=crop",
+      alt: "A slice of lemon cheesecake with citrus topping",
+    },
+  },
+  {
+    name: { en: "Fresh Orange Juice", fa: "آب پرتقال تازه" },
+    description: {
+      en: "Cold-pressed, squeezed to order, nothing added.",
+      fa: "تازه گرفته‌شده، به‌سفارش شما، بدون هیچ افزودنی.",
+    },
+    priceToman: 65000,
+    tag: { en: "Fresh", fa: "تازه" },
+    category: "juice",
+    image: {
+      src: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=1200&q=80&auto=format&fit=crop",
+      alt: "A glass of fresh orange juice with orange slices",
+    },
+  },
+  {
+    name: { en: "Watermelon Sherbet", fa: "شربت هندوانه" },
+    description: {
+      en: "Chilled watermelon sherbet, a bright summer classic.",
+      fa: "شربت خنک هندوانه، کلاسیک تابستانی و شاداب.",
+    },
+    priceToman: 55000,
+    tag: { en: "Seasonal", fa: "فصلی" },
+    category: "juice",
+    image: {
+      src: "https://images.unsplash.com/photo-1546173159-315724a31696?w=1200&q=80&auto=format&fit=crop",
+      alt: "A refreshing glass of watermelon sherbet with mint garnish",
+    },
+  },
+  {
+    name: { en: "Mixed Berry Smoothie", fa: "اسموتی توت‌فرنگی" },
+    description: {
+      en: "Strawberry, blueberry, and yogurt, blended smooth.",
+      fa: "توت‌فرنگی، بلوبری و ماست، میکس‌شده و مخملی.",
+    },
+    priceToman: 78000,
+    tag: { en: "Signature", fa: "ویژه" },
+    category: "juice",
+    image: {
+      src: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=1200&q=80&auto=format&fit=crop",
+      alt: "A mixed berry smoothie in a glass topped with fresh berries",
+    },
+  },
 ];
 
 async function ensureDataDir() {

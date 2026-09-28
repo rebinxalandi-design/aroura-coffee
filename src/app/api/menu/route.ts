@@ -9,6 +9,7 @@ const VALID_CATEGORIES: MenuCategory[] = [
   "espresso",
   "cake",
   "pastry",
+  "juice",
   "other",
 ];
 

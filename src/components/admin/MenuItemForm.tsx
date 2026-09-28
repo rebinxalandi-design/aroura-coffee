@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MenuCategory, MenuItem } from "@/lib/types";
 
-const CATEGORIES: MenuCategory[] = ["coffee", "espresso", "cake", "pastry", "other"];
+const CATEGORIES: MenuCategory[] = ["coffee", "espresso", "cake", "pastry", "juice", "other"];
 
 export interface MenuItemFormValues {
   nameEn: string;
