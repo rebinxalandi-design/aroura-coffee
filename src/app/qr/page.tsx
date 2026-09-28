@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { LogoMark } from "@/components/Logo";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function QrPage() {
@@ -15,7 +16,8 @@ export default function QrPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-cream px-6 py-16 text-center">
-      <p className="mb-3 text-xs uppercase tracking-[0.3em] text-wood">
+      <LogoMark className="h-10 w-10 text-espresso" />
+      <p className="mb-3 mt-4 text-xs uppercase tracking-[0.3em] text-wood">
         {t.qrPage.eyebrow}
       </p>
       <h1 className="font-display text-3xl italic text-espresso md:text-4xl">

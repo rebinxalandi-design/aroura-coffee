@@ -1,6 +1,7 @@
 "use client";
 
 import MagneticButton from "./MagneticButton";
+import { LogoMark } from "./Logo";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function Footer() {
@@ -43,7 +44,10 @@ export default function Footer() {
 
         <div className="mt-16 flex flex-col-reverse items-start justify-between gap-4 text-xs text-[#f3e6d8]/40 sm:flex-row sm:items-center">
           <p>© {new Date().getFullYear()} Aroura Coffee. {t.footer.rights}</p>
-          <p className="font-display italic text-[#f3e6d8]/70">Aroura</p>
+          <span className="inline-flex items-center gap-2 text-[#f3e6d8]/70">
+            <LogoMark className="h-5 w-5" />
+            <span className="font-display italic">Aroura</span>
+          </span>
         </div>
       </div>
     </footer>

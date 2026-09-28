@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import MagneticButton from "./MagneticButton";
 import ThemeToggle from "./ThemeToggle";
 import LocaleSwitcher from "./LocaleSwitcher";
+import Logo from "./Logo";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function Navbar() {
@@ -47,8 +48,8 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <a href="#top" data-cursor-hover className="font-display text-lg italic tracking-tight text-espresso">
-        Aroura
+      <a href="#top" data-cursor-hover>
+        <Logo />
       </a>
       <nav className="hidden items-center gap-10 md:flex">
         {LINKS.map((link) => (
