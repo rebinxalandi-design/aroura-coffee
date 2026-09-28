@@ -21,11 +21,7 @@ import LocaleProvider from "@/lib/i18n/LocaleProvider";
 import ThemeProvider from "@/lib/theme/ThemeProvider";
 import ToastProvider from "@/lib/toast/ToastProvider";
 import LanguageModal from "@/components/LanguageModal";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-const SITE_NAME = "Aroura Coffee";
-const SITE_DESCRIPTION =
-  "A premium specialty coffee house. Beans, roasted with intention, crafted into a cup worth savoring.";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -49,10 +45,14 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: "/hero/latte-final.jpg",
+        // Social platforms expect a landscape ~1200x630 OG image; the
+        // other hero photos are portrait/near-square and get awkwardly
+        // cropped in link previews, so this is the one hero shot close
+        // to that ratio (1200x686).
+        url: "/hero/espresso.jpg",
         width: 1200,
-        height: 1500,
-        alt: "A finished latte with heart latte art, resting on coffee beans",
+        height: 686,
+        alt: "A shot of espresso with rich crema",
       },
     ],
   },
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${SITE_NAME} — Taste the Craft`,
     description: SITE_DESCRIPTION,
-    images: ["/hero/latte-final.jpg"],
+    images: ["/hero/espresso.jpg"],
   },
 };
 

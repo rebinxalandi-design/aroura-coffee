@@ -5,8 +5,7 @@ import MenuSection from "@/components/MenuSection";
 import Footer from "@/components/Footer";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import CustomCursor from "@/components/CustomCursor";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+import { SITE_URL } from "@/lib/site";
 
 // Mirrors the real hours/address copy in Footer.tsx — do not invent details
 // (ratings, review counts, phone numbers, etc.) that aren't already shown

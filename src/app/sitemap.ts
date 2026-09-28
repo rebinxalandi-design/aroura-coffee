@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+import { SITE_URL } from "@/lib/site";
 
 // Only real, distinct pages belong here — the marketing homepage's in-page
 // anchors (#menu, #craft, #visit) are sections of "/", not separate routes,
