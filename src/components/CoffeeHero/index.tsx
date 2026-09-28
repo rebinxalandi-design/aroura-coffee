@@ -98,8 +98,6 @@ export default function CoffeeHero() {
           );
       };
 
-      tl.to(q('[data-text="0"]'), { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0);
-
       // 1. Beans -> Grind
       crossfade(0, 1, 0.5, 0.9)
         .to(q('[data-text="0"]'), { autoAlpha: 0, y: -20, duration: 0.3 }, 0.5)
@@ -186,12 +184,25 @@ export default function CoffeeHero() {
           <div
             key={i}
             data-text={i}
-            className="invisible absolute translate-y-6 opacity-0"
+            // The first caption should already be readable on load (a visitor
+            // who hasn't scrolled yet should still see something on the
+            // hero, not a bare photo) — GSAP's scrub timeline only needs to
+            // animate it back out on scroll, not fade it in from scratch.
+            // Every later stage still starts hidden, revealed by the timeline.
+            className={
+              i === 0
+                ? "absolute translate-y-0 opacity-100"
+                : "invisible absolute translate-y-6 opacity-0"
+            }
           >
-            <p className="font-display text-3xl italic text-cream [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-5xl">
+            {/* These captions sit on top of a photo, not the page background,
+                so they need to stay light in both themes -- text-cream would
+                flip to a dark color in the dark theme (where --color-cream is
+                swapped to sit behind dark-mode surfaces) and vanish. */}
+            <p className="font-display text-3xl italic text-[#f3e6d8] [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-5xl">
               {s.title}
             </p>
-            <p className="mt-3 text-sm tracking-wide text-cream/85 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)] md:text-base">
+            <p className="mt-3 text-sm tracking-wide text-[#f3e6d8]/85 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)] md:text-base">
               {s.sub}
             </p>
           </div>
@@ -203,10 +214,10 @@ export default function CoffeeHero() {
         data-part="final-reveal"
         className="invisible absolute inset-0 z-20 flex translate-y-6 flex-col items-center justify-end pb-16 text-center opacity-0 md:pb-20"
       >
-        <p className="mb-3 text-xs uppercase tracking-[0.3em] text-cream/80 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)]">
+        <p className="mb-3 text-xs uppercase tracking-[0.3em] text-[#f3e6d8]/80 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)]">
           Aroura Coffee
         </p>
-        <h1 className="font-display text-4xl italic text-cream [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-6xl">
+        <h1 className="font-display text-4xl italic text-[#f3e6d8] [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-6xl">
           Taste the Craft
         </h1>
         <div className="mt-8">
