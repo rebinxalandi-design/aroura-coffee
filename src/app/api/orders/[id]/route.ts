@@ -16,7 +16,7 @@ export async function PATCH(
 ) {
   const user = await getCurrentUser();
   if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
   const { id } = await params;
@@ -24,12 +24,12 @@ export async function PATCH(
   const status = body?.status;
 
   if (typeof status !== "string" || !VALID_STATUSES.includes(status as OrderStatus)) {
-    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    return NextResponse.json({ error: "invalid_status" }, { status: 400 });
   }
 
   const updated = await updateOrderStatus(id, status as OrderStatus);
   if (!updated) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
   return NextResponse.json({ order: updated });

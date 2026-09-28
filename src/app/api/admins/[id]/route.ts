@@ -8,21 +8,18 @@ export async function DELETE(
 ) {
   const user = await getCurrentUser();
   if (!user || user.role !== "super_admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   const { id } = await params;
 
   if (id === user.id) {
-    return NextResponse.json(
-      { error: "You cannot delete your own account" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "cannot_delete_self" }, { status: 400 });
   }
 
   const target = await findAdminById(id);
   if (!target) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
   await deleteAdmin(id);

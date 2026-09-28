@@ -7,15 +7,12 @@ export async function POST(request: NextRequest) {
   const password = body?.password;
 
   if (typeof username !== "string" || typeof password !== "string") {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
   const user = await login(username, password);
   if (!user) {
-    return NextResponse.json(
-      { error: "Invalid username or password" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });
   }
 
   await createSessionCookie(user);

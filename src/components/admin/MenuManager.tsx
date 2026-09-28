@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useToast } from "@/lib/toast/ToastProvider";
 import { formatToman } from "@/lib/currency";
+import { translateApiError } from "@/lib/i18n/dictionary";
 import MenuItemForm, { type MenuItemFormValues } from "./MenuItemForm";
 import type { MenuItem } from "@/lib/types";
 
@@ -30,7 +31,7 @@ export default function MenuManager({
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error ?? t.orderModal.error, "error");
+        showToast(translateApiError(locale, data.error), "error");
         return;
       }
       setItems((prev) => [...prev, data.item]);
@@ -51,7 +52,7 @@ export default function MenuManager({
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error ?? t.orderModal.error, "error");
+        showToast(translateApiError(locale, data.error), "error");
         return;
       }
       setItems((prev) => prev.map((i) => (i.id === id ? data.item : i)));

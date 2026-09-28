@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { translateApiError } from "@/lib/i18n/dictionary";
 import type { MenuCategory, MenuItem } from "@/lib/types";
 
 const CATEGORIES: MenuCategory[] = ["coffee", "espresso", "cake", "pastry", "juice", "other"];
@@ -31,7 +32,7 @@ export default function MenuItemForm({
   onCancel: () => void;
   submitting: boolean;
 }) {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const [nameEn, setNameEn] = useState(existing?.name.en ?? "");
   const [nameFa, setNameFa] = useState(existing?.name.fa ?? "");
   const [descEn, setDescEn] = useState(existing?.description.en ?? "");
@@ -57,7 +58,7 @@ export default function MenuItemForm({
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? t.admin.uploadFailed);
+        setError(translateApiError(locale, data.error));
         return;
       }
       setImageSrc(data.src);

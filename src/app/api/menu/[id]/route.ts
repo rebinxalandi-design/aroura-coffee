@@ -19,18 +19,18 @@ export async function PATCH(
 ) {
   const user = await getCurrentUser();
   if (!user || user.role !== "super_admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   const { id } = await params;
   const existing = await findMenuItem(id);
   if (!existing) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
   const body = await request.json().catch(() => null);
   if (!body) {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
   const { nameEn, nameFa, descEn, descFa, priceToman, tagEn, tagFa, category, imageSrc, imageAlt } = body;
@@ -72,7 +72,7 @@ export async function DELETE(
 ) {
   const user = await getCurrentUser();
   if (!user || user.role !== "super_admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
   const { id } = await params;
   await deleteMenuItem(id);

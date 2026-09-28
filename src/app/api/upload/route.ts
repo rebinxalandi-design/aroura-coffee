@@ -14,36 +14,30 @@ const ALLOWED_TYPES: Record<string, string> = {
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();
   if (!user || user.role !== "super_admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   const formData = await request.formData().catch(() => null);
   if (!formData) {
-    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
+    return NextResponse.json({ error: "invalid_form_data" }, { status: 400 });
   }
 
   const file = formData.get("file");
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    return NextResponse.json({ error: "no_file_provided" }, { status: 400 });
   }
 
   if (file.size === 0) {
-    return NextResponse.json({ error: "Empty file" }, { status: 400 });
+    return NextResponse.json({ error: "empty_file" }, { status: 400 });
   }
 
   if (file.size > MAX_SIZE_BYTES) {
-    return NextResponse.json(
-      { error: "File too large (max 5MB)" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "file_too_large" }, { status: 400 });
   }
 
   const extension = ALLOWED_TYPES[file.type];
   if (!extension) {
-    return NextResponse.json(
-      { error: "Unsupported file type. Use JPEG, PNG, or WebP." },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "unsupported_file_type" }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -61,10 +55,7 @@ export async function POST(request: NextRequest) {
       buffer.slice(8, 12).toString("ascii") === "WEBP");
 
   if (!isValidImage) {
-    return NextResponse.json(
-      { error: "File content does not match a valid image" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "invalid_image_content" }, { status: 400 });
   }
 
   const uploadsDir = path.join(process.cwd(), "public", "uploads");

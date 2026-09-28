@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useToast } from "@/lib/toast/ToastProvider";
+import { translateApiError } from "@/lib/i18n/dictionary";
 import type { Role } from "@/lib/types";
 
 interface SafeAdmin {
@@ -19,7 +20,7 @@ export default function AccountsManager({
   initialAdmins: SafeAdmin[];
   currentUserId: string;
 }) {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const { showToast } = useToast();
   const [admins, setAdmins] = useState(initialAdmins);
   const [username, setUsername] = useState("");
@@ -40,7 +41,7 @@ export default function AccountsManager({
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Failed");
+        setError(translateApiError(locale, data.error));
         return;
       }
       setAdmins((prev) => [...prev, data.admin]);

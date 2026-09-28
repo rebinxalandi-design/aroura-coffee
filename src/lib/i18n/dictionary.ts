@@ -125,6 +125,27 @@ export const dictionary = {
         other: "Other",
       },
     },
+    apiErrors: {
+      forbidden: "You don't have access to do that.",
+      unauthorized: "Please log in again.",
+      invalid_body: "Something went wrong. Please try again.",
+      not_found: "That item could not be found.",
+      missing_item_id: "Please choose an item.",
+      missing_customer_name: "Please enter your name.",
+      missing_required_fields: "Please fill in all required fields.",
+      invalid_status: "Invalid order status.",
+      invalid_credentials: "Incorrect username or password.",
+      username_taken: "That username is already in use.",
+      invalid_new_admin: "Username must be at least 3 characters and password at least 6 characters.",
+      cannot_delete_self: "You can't delete your own account.",
+      invalid_form_data: "Something went wrong. Please try again.",
+      no_file_provided: "Please choose a file to upload.",
+      empty_file: "That file is empty.",
+      file_too_large: "That file is too large (max 5MB).",
+      unsupported_file_type: "Please use a JPEG, PNG, or WebP image.",
+      invalid_image_content: "That file doesn't look like a valid image.",
+      unknown: "Something went wrong. Please try again.",
+    },
   },
   fa: {
     nav: {
@@ -250,6 +271,27 @@ export const dictionary = {
         other: "سایر",
       },
     },
+    apiErrors: {
+      forbidden: "شما اجازه‌ی انجام این کار را ندارید.",
+      unauthorized: "لطفاً دوباره وارد شوید.",
+      invalid_body: "مشکلی پیش آمد. دوباره تلاش کنید.",
+      not_found: "این مورد پیدا نشد.",
+      missing_item_id: "لطفاً یک آیتم انتخاب کنید.",
+      missing_customer_name: "لطفاً نام خود را وارد کنید.",
+      missing_required_fields: "لطفاً همه‌ی فیلدهای لازم را پر کنید.",
+      invalid_status: "وضعیت سفارش نامعتبر است.",
+      invalid_credentials: "نام کاربری یا رمز عبور نادرست است.",
+      username_taken: "این نام کاربری قبلاً استفاده شده است.",
+      invalid_new_admin: "نام کاربری باید حداقل ۳ کاراکتر و رمز عبور حداقل ۶ کاراکتر باشد.",
+      cannot_delete_self: "شما نمی‌توانید حساب خودتان را حذف کنید.",
+      invalid_form_data: "مشکلی پیش آمد. دوباره تلاش کنید.",
+      no_file_provided: "لطفاً یک فایل برای بارگذاری انتخاب کنید.",
+      empty_file: "این فایل خالی است.",
+      file_too_large: "حجم این فایل زیاد است (حداکثر ۵ مگابایت).",
+      unsupported_file_type: "لطفاً از فرمت JPEG، PNG یا WebP استفاده کنید.",
+      invalid_image_content: "این فایل یک تصویر معتبر به نظر نمی‌رسد.",
+      unknown: "مشکلی پیش آمد. دوباره تلاش کنید.",
+    },
   },
 } as const;
 
@@ -258,3 +300,20 @@ type Widen<T> = T extends string
   : { [K in keyof T]: Widen<T[K]> };
 
 export type Dictionary = Widen<typeof dictionary.en>;
+
+export type ApiErrorCode = keyof (typeof dictionary)["en"]["apiErrors"];
+
+/**
+ * API routes return a stable `code` (never a human sentence, which would
+ * always be in English) so the client can show it in whatever language the
+ * visitor has selected. Falls back to the generic "unknown" message for a
+ * code this dictionary doesn't recognize, so an unrecognized/future code
+ * never leaks raw English (or crashes on a missing key).
+ */
+export function translateApiError(locale: Locale, code: string | undefined | null): string {
+  const errors = dictionary[locale].apiErrors;
+  if (code && code in errors) {
+    return errors[code as ApiErrorCode];
+  }
+  return errors.unknown;
+}

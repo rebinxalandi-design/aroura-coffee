@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 export async function GET() {
   const user = await getCurrentUser();
   if (!user || user.role !== "super_admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
   const admins = await listAdmins();
   return NextResponse.json({
@@ -21,7 +21,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();
   if (!user || user.role !== "super_admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   const body = await request.json().catch(() => null);
@@ -35,13 +35,7 @@ export async function POST(request: NextRequest) {
     typeof password !== "string" ||
     password.length < 6
   ) {
-    return NextResponse.json(
-      {
-        error:
-          "Username must be at least 3 characters and password at least 6 characters.",
-      },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "invalid_new_admin" }, { status: 400 });
   }
 
   try {
@@ -61,8 +55,8 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to create admin";
-    return NextResponse.json({ error: message }, { status: 409 });
+  } catch {
+    // createAdmin only throws for a duplicate username (see src/lib/store.ts).
+    return NextResponse.json({ error: "username_taken" }, { status: 409 });
   }
 }
