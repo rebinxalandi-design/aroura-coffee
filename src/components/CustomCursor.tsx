@@ -25,11 +25,12 @@ export default function CustomCursor() {
       gsap.set(dot, { x: mouseX, y: mouseY });
     };
 
-    gsap.ticker.add(() => {
+    const tickRing = () => {
       ringPos.x += (mouseX - ringPos.x) * 0.18;
       ringPos.y += (mouseY - ringPos.y) * 0.18;
       gsap.set(ring, { x: ringPos.x, y: ringPos.y });
-    });
+    };
+    gsap.ticker.add(tickRing);
 
     const onEnterInteractive = () => {
       gsap.to(ring, { width: 64, height: 64, borderColor: "var(--color-gold)", duration: 0.3 });
@@ -50,6 +51,7 @@ export default function CustomCursor() {
 
     return () => {
       window.removeEventListener("mousemove", move);
+      gsap.ticker.remove(tickRing);
       interactiveEls.forEach((el) => {
         el.removeEventListener("mouseenter", onEnterInteractive);
         el.removeEventListener("mouseleave", onLeaveInteractive);

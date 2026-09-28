@@ -156,9 +156,9 @@ export default function CoffeeHero() {
         <p className="mb-3 mt-6 text-xs uppercase tracking-[0.3em] text-espresso/60">
           Aroura Coffee
         </p>
-        <h2 className="font-display text-4xl italic text-espresso md:text-6xl">
+        <h1 className="font-display text-4xl italic text-espresso md:text-6xl">
           Taste the Craft
-        </h2>
+        </h1>
         <div className="mt-8">
           <MagneticButton>Discover Our Coffee</MagneticButton>
         </div>
@@ -206,9 +206,9 @@ export default function CoffeeHero() {
         <p className="mb-3 text-xs uppercase tracking-[0.3em] text-cream/80 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)]">
           Aroura Coffee
         </p>
-        <h2 className="font-display text-4xl italic text-cream [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-6xl">
+        <h1 className="font-display text-4xl italic text-cream [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-6xl">
           Taste the Craft
-        </h2>
+        </h1>
         <div className="mt-8">
           <MagneticButton>Discover Our Coffee</MagneticButton>
         </div>

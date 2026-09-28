@@ -1,8 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter, Vazirmatn } from "next/font/google";
 import "./globals.css";
-import SmoothScrollProvider from "@/components/SmoothScrollProvider";
-import CustomCursor from "@/components/CustomCursor";
 import LocaleProvider from "@/lib/i18n/LocaleProvider";
 import ThemeProvider from "@/lib/theme/ThemeProvider";
 import ToastProvider from "@/lib/toast/ToastProvider";
@@ -33,10 +31,55 @@ const vazirmatn = Vazirmatn({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const SITE_NAME = "Aroura Coffee";
+const SITE_DESCRIPTION =
+  "A premium specialty coffee house. Beans, roasted with intention, crafted into a cup worth savoring.";
+
 export const metadata: Metadata = {
-  title: "Aroura Coffee — Taste the Craft",
-  description:
-    "A premium specialty coffee house. Beans, roasted with intention, crafted into a cup worth savoring.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} — Taste the Craft`,
+    template: `%s — ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — Taste the Craft`,
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: "/hero/latte-final.jpg",
+        width: 1200,
+        height: 1500,
+        alt: "A finished latte with heart latte art, resting on coffee beans",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} — Taste the Craft`,
+    description: SITE_DESCRIPTION,
+    images: ["/hero/latte-final.jpg"],
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f1e6" },
+    { media: "(prefers-color-scheme: dark)", color: "#2c1912" },
+  ],
 };
 
 // Runs before paint to avoid a flash of the wrong theme/direction. Reads the
@@ -73,12 +116,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeProvider>
           <LocaleProvider>
             <ToastProvider>
-              <SmoothScrollProvider>
-                <CustomCursor />
-                <div className="grain-overlay" aria-hidden="true" />
-                <LanguageModal />
-                {children}
-              </SmoothScrollProvider>
+              <div className="grain-overlay" aria-hidden="true" />
+              <LanguageModal />
+              {children}
             </ToastProvider>
           </LocaleProvider>
         </ThemeProvider>
