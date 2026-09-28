@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { updateMenuItem, deleteMenuItem, findMenuItem } from "@/lib/store";
 import { getCurrentUser } from "@/lib/auth";
 import type { MenuCategory } from "@/lib/types";
@@ -60,6 +61,7 @@ export async function PATCH(
   }
 
   const updated = await updateMenuItem(id, patch);
+  revalidatePath("/");
   return NextResponse.json({ item: updated });
 }
 
@@ -73,5 +75,6 @@ export async function DELETE(
   }
   const { id } = await params;
   await deleteMenuItem(id);
+  revalidatePath("/");
   return NextResponse.json({ ok: true });
 }

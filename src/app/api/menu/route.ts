@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { listMenuItems, createMenuItem } from "@/lib/store";
 import { getCurrentUser } from "@/lib/auth";
 import type { MenuCategory } from "@/lib/types";
@@ -54,6 +55,11 @@ export async function POST(request: NextRequest) {
     category: safeCategory,
     image: { src: imageSrc, alt: (imageAlt ?? nameEn).trim() },
   });
+
+  // The public homepage renders the menu as a static/cached Server
+  // Component (see src/app/page.tsx), so without this an admin's change is
+  // invisible to real visitors until the next full rebuild.
+  revalidatePath("/");
 
   return NextResponse.json({ item }, { status: 201 });
 }
