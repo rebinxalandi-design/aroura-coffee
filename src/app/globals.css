@@ -88,6 +88,15 @@ html[lang="fa"] {
   --font-sans: var(--font-vazirmatn), "Segoe UI", Tahoma, sans-serif;
 }
 
+/* "Uppercase" is a Latin-script concept -- Persian has no case to
+   transform, so this is a no-op for fa content and safe to disable
+   outright. (It was not the cause of a separate, unrelated rendering bug
+   with Extended Arabic-Indic digits -- see src/lib/currency.ts -- but it
+   has no reason to stay applied to Persian text either way.) */
+html[lang="fa"] .uppercase {
+  text-transform: none;
+}
+
 * {
   box-sizing: border-box;
 }

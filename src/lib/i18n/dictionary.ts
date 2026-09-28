@@ -25,6 +25,49 @@ export const dictionary = {
       subtitle: "Point your phone's camera at the code to visit the site.",
       urlLabel: "Or type this address:",
     },
+    hero: {
+      stages: [
+        { title: "Sourced with intention", sub: "Single-origin beans, hand-selected." },
+        { title: "Ground to precision", sub: "Freshly milled, seconds before brewing." },
+        { title: "Extracted with care", sub: "Rich espresso, pulled slow." },
+        { title: "Steamed to silk", sub: "Milk, textured to a velvet microfoam." },
+        { title: "Poured as art", sub: "Every cup, finished by hand." },
+      ],
+      brand: "Aroura Coffee",
+      finalTitle: "Taste the Craft",
+      cta: "Discover Our Coffee",
+    },
+    story: {
+      eyebrow: "Our Craft",
+      title: "From soil to cup, nothing is left to chance.",
+      panels: [
+        {
+          eyebrow: "01 — Quality",
+          title: "It starts with the seed.",
+          copy: "We work directly with smallholder farms across three continents, selecting only lots that meet our standard for sweetness, body, and clarity.",
+        },
+        {
+          eyebrow: "02 — Roasting",
+          title: "Roasted in small batches.",
+          copy: "Each batch is roasted by hand to draw out its character — never rushed, never masked. Consistency comes from patience, not shortcuts.",
+        },
+        {
+          eyebrow: "03 — Grinding",
+          title: "Ground moments before brewing.",
+          copy: "Freshness fades fast once beans are ground. We mill to order, calibrated precisely for each extraction method, cup by cup.",
+        },
+        {
+          eyebrow: "04 — Brewing",
+          title: "Extraction, dialed to the gram.",
+          copy: "Temperature, pressure, and time are tuned daily against every new lot — because no two harvests taste quite the same.",
+        },
+        {
+          eyebrow: "05 — Craftsmanship",
+          title: "Finished by hand, every time.",
+          copy: "The final pour is where technique becomes expression. It's the last, and most human, step in the journey from soil to cup.",
+        },
+      ],
+    },
     menu: {
       eyebrow: "The Menu",
       title: "Every cup, made to order.",
@@ -170,6 +213,49 @@ export const dictionary = {
       title: "برای ورود اسکن کنید",
       subtitle: "دوربین گوشی خود را روی کد بگیرید تا وارد سایت شوید.",
       urlLabel: "یا این آدرس را وارد کنید:",
+    },
+    hero: {
+      stages: [
+        { title: "برداشتی از سر عشق", sub: "دانه‌های تک‌خاستگاه، با دست انتخاب‌شده." },
+        { title: "آسیاب تا دقت کامل", sub: "تازه‌آسیاب‌شده، ثانیه‌ها پیش از دم‌کردن." },
+        { title: "استخراجی با دقت", sub: "اسپرسویی غنی، آرام گرفته‌شده." },
+        { title: "شیری به لطافت ابریشم", sub: "شیری که تا بافت مخملی بخار داده شده." },
+        { title: "هنر یک فنجان", sub: "هر فنجان، با دست تکمیل می‌شود." },
+      ],
+      brand: "کافه آئورا",
+      finalTitle: "طعم هنر قهوه",
+      cta: "قهوه‌های ما را ببینید",
+    },
+    story: {
+      eyebrow: "هنر ما",
+      title: "از خاک تا فنجان، هیچ چیز به شانس سپرده نمی‌شود.",
+      panels: [
+        {
+          eyebrow: "01 — کیفیت",
+          title: "همه‌چیز از دانه آغاز می‌شود.",
+          copy: "ما مستقیماً با مزارع کوچک در سه قاره همکاری می‌کنیم و فقط محصولاتی را انتخاب می‌کنیم که استاندارد ما برای شیرینی، بافت و شفافیت را داشته باشند.",
+        },
+        {
+          eyebrow: "02 — رست",
+          title: "رست‌شده در دسته‌های کوچک.",
+          copy: "هر دسته با دست رست می‌شود تا شخصیت واقعی‌اش نمایان شود — نه با شتاب، نه با پوشاندن نقص. ثبات کیفیت از صبر می‌آید، نه میانبر.",
+        },
+        {
+          eyebrow: "03 — آسیاب",
+          title: "آسیاب‌شده لحظاتی پیش از دم‌کردن.",
+          copy: "تازگی دانه‌ها به‌محض آسیاب‌شدن به‌سرعت از بین می‌رود. ما برای هر روش دم‌آوری، به‌سفارش و دقیقاً کالیبره‌شده آسیاب می‌کنیم.",
+        },
+        {
+          eyebrow: "04 — دم‌آوری",
+          title: "استخراجی، دقیق تا آخرین گرم.",
+          copy: "دما، فشار و زمان هر روز در برابر هر محصول جدید تنظیم می‌شوند — چون هیچ دو برداشتی طعم یکسانی ندارند.",
+        },
+        {
+          eyebrow: "05 — هنرمندی",
+          title: "هر بار، با دست تکمیل می‌شود.",
+          copy: "ریختن نهایی، جایی‌ست که تکنیک به بیانی هنری تبدیل می‌شود؛ آخرین و انسانی‌ترین گام در سفر از خاک تا فنجان.",
+        },
+      ],
     },
     menu: {
       eyebrow: "منو",

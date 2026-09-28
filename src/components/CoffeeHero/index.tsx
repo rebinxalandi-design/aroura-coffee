@@ -5,16 +5,11 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import CoffeeScene from "./CoffeeScene";
 import StageIndicator from "./StageIndicator";
 import MagneticButton from "../MagneticButton";
-
-const STAGE_LABELS = [
-  { title: "Sourced with intention", sub: "Single-origin beans, hand-selected." },
-  { title: "Ground to precision", sub: "Freshly milled, seconds before brewing." },
-  { title: "Extracted with care", sub: "Rich espresso, pulled slow." },
-  { title: "Steamed to silk", sub: "Milk, textured to a velvet microfoam." },
-  { title: "Poured as art", sub: "Every cup, finished by hand." },
-];
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function CoffeeHero() {
+  const { t } = useLocale();
+  const STAGE_LABELS = t.hero.stages;
   const sectionRef = useRef<HTMLDivElement>(null);
   const sceneWrapRef = useRef<HTMLDivElement>(null);
   const [activeStage, setActiveStage] = useState(0);
@@ -152,13 +147,13 @@ export default function CoffeeHero() {
           <CoffeeScene finalState />
         </div>
         <p className="mb-3 mt-6 text-xs uppercase tracking-[0.3em] text-espresso/60">
-          Aroura Coffee
+          {t.hero.brand}
         </p>
         <h1 className="font-display text-4xl italic text-espresso md:text-6xl">
-          Taste the Craft
+          {t.hero.finalTitle}
         </h1>
         <div className="mt-8">
-          <MagneticButton>Discover Our Coffee</MagneticButton>
+          <MagneticButton>{t.hero.cta}</MagneticButton>
         </div>
       </section>
     );
@@ -215,13 +210,13 @@ export default function CoffeeHero() {
         className="invisible absolute inset-0 z-20 flex translate-y-6 flex-col items-center justify-end pb-16 text-center opacity-0 md:pb-20"
       >
         <p className="mb-3 text-xs uppercase tracking-[0.3em] text-[#f3e6d8]/80 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)]">
-          Aroura Coffee
+          {t.hero.brand}
         </p>
         <h1 className="font-display text-4xl italic text-[#f3e6d8] [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-6xl">
-          Taste the Craft
+          {t.hero.finalTitle}
         </h1>
         <div className="mt-8">
-          <MagneticButton>Discover Our Coffee</MagneticButton>
+          <MagneticButton>{t.hero.cta}</MagneticButton>
         </div>
       </div>
 

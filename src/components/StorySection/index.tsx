@@ -3,43 +3,25 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import StoryPanel from "./StoryPanel";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
-const PANELS = [
-  {
-    eyebrow: "01 — Quality",
-    title: "It starts with the seed.",
-    copy: "We work directly with smallholder farms across three continents, selecting only lots that meet our standard for sweetness, body, and clarity.",
-    image: { src: "/hero/beans.jpg", alt: "Whole roasted coffee beans" },
-  },
-  {
-    eyebrow: "02 — Roasting",
-    title: "Roasted in small batches.",
-    copy: "Each batch is roasted by hand to draw out its character — never rushed, never masked. Consistency comes from patience, not shortcuts.",
-    image: { src: "/hero/grind.jpg", alt: "Roasted beans and freshly ground coffee on a wooden board" },
-    reverse: true,
-  },
-  {
-    eyebrow: "03 — Grinding",
-    title: "Ground moments before brewing.",
-    copy: "Freshness fades fast once beans are ground. We mill to order, calibrated precisely for each extraction method, cup by cup.",
-    image: { src: "/hero/espresso.jpg", alt: "A shot of espresso with rich crema" },
-  },
-  {
-    eyebrow: "04 — Brewing",
-    title: "Extraction, dialed to the gram.",
-    copy: "Temperature, pressure, and time are tuned daily against every new lot — because no two harvests taste quite the same.",
-    image: { src: "/hero/milk.jpg", alt: "Steamed milk being poured into a latte" },
-    reverse: true,
-  },
-  {
-    eyebrow: "05 — Craftsmanship",
-    title: "Finished by hand, every time.",
-    copy: "The final pour is where technique becomes expression. It's the last, and most human, step in the journey from soil to cup.",
-    image: { src: "/hero/latte-final.jpg", alt: "A finished latte with heart latte art, resting on coffee beans" },
-  },
+// Images/alt text stay fixed (they're not language-dependent); only the
+// eyebrow/title/copy come from the dictionary, keyed by array index.
+const PANEL_IMAGES = [
+  { src: "/hero/beans.jpg", alt: "Whole roasted coffee beans" },
+  { src: "/hero/grind.jpg", alt: "Roasted beans and freshly ground coffee on a wooden board", reverse: true },
+  { src: "/hero/espresso.jpg", alt: "A shot of espresso with rich crema" },
+  { src: "/hero/milk.jpg", alt: "Steamed milk being poured into a latte", reverse: true },
+  { src: "/hero/latte-final.jpg", alt: "A finished latte with heart latte art, resting on coffee beans" },
 ];
 
 export default function StorySection() {
+  const { t } = useLocale();
+  const PANELS = t.story.panels.map((panel, i) => ({
+    ...panel,
+    image: { src: PANEL_IMAGES[i].src, alt: PANEL_IMAGES[i].alt },
+    reverse: PANEL_IMAGES[i].reverse,
+  }));
   const headingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,16 +46,16 @@ export default function StorySection() {
     <section id="craft" className="bg-cream px-6 py-24 md:px-12 md:py-32">
       <div ref={headingRef} className="mx-auto max-w-2xl text-center">
         <p className="mb-4 text-xs uppercase tracking-[0.28em] text-wood">
-          Our Craft
+          {t.story.eyebrow}
         </p>
         <h2 className="font-display text-4xl italic leading-tight text-espresso md:text-5xl">
-          From soil to cup, nothing is left to chance.
+          {t.story.title}
         </h2>
       </div>
 
       <div className="mx-auto mt-16 max-w-5xl divide-y divide-espresso/8 md:mt-24">
-        {PANELS.map((panel) => (
-          <StoryPanel key={panel.title} {...panel} />
+        {PANELS.map((panel, i) => (
+          <StoryPanel key={i} {...panel} />
         ))}
       </div>
     </section>

@@ -89,7 +89,7 @@ const SEED_MENU_ITEMS: Omit<MenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: { en: "Cold Brew", fa: "کلد برو" },
     description: {
       en: "Steeped 18 hours, smooth, low acidity, no ice dilution.",
-      fa: "۱۸ ساعت دم‌کشیده، ملایم، اسیدیته کم، بدون رقیق‌شدن با یخ.",
+      fa: "18 ساعت دم‌کشیده، ملایم، اسیدیته کم، بدون رقیق‌شدن با یخ.",
     },
     priceToman: 80000,
     tag: { en: "Classic", fa: "کلاسیک" },

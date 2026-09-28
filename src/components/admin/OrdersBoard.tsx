@@ -116,8 +116,12 @@ export default function OrdersBoard() {
                   </p>
                 )}
                 <p className="mt-1 text-xs text-espresso/35">
+                  {/* "fa-IR" switches to the Jalali calendar *and* Extended
+                      Arabic-Indic digits, which trigger a font rendering bug
+                      (see src/lib/currency.ts) -- force the Latin numbering
+                      system so the calendar can localize without that. */}
                   {new Date(order.createdAt).toLocaleString(
-                    locale === "fa" ? "fa-IR" : "en-US"
+                    locale === "fa" ? "fa-IR-u-nu-latn" : "en-US"
                   )}
                 </p>
               </div>
