@@ -1,35 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Inter, Vazirmatn } from "next/font/google";
+// Self-hosted via @fontsource (files ship in node_modules, served locally)
+// instead of next/font/google, which fetches from fonts.gstatic.com at
+// build/dev time -- that host is unreliable from this network and was
+// causing "next dev" to fail with 500s on connection timeouts.
+import "@fontsource/playfair-display/500.css";
+import "@fontsource/playfair-display/600.css";
+import "@fontsource/playfair-display/700.css";
+import "@fontsource/playfair-display/500-italic.css";
+import "@fontsource/playfair-display/600-italic.css";
+import "@fontsource/playfair-display/700-italic.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/vazirmatn/arabic-400.css";
+import "@fontsource/vazirmatn/arabic-500.css";
+import "@fontsource/vazirmatn/arabic-600.css";
+import "@fontsource/vazirmatn/arabic-700.css";
 import "./globals.css";
 import LocaleProvider from "@/lib/i18n/LocaleProvider";
 import ThemeProvider from "@/lib/theme/ThemeProvider";
 import ToastProvider from "@/lib/toast/ToastProvider";
 import LanguageModal from "@/components/LanguageModal";
-
-const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["500", "600", "700"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-// Vazirmatn covers both roles (display + body) for Persian: Latin serif
-// italics have no Arabic/Persian glyphs, so fa content needs its own
-// typeface family rather than falling through to the Latin fonts above.
-const vazirmatn = Vazirmatn({
-  subsets: ["arabic"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-vazirmatn",
-  display: "swap",
-});
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const SITE_NAME = "Aroura Coffee";
@@ -106,7 +97,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`h-full antialiased ${playfairDisplay.variable} ${inter.variable} ${vazirmatn.variable}`}
+      className="h-full antialiased"
       suppressHydrationWarning
     >
       <head>
