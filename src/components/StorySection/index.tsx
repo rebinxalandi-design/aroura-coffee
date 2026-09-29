@@ -43,17 +43,17 @@ export default function StorySection() {
   }, []);
 
   return (
-    <section id="craft" className="bg-cream px-6 py-24 md:px-12 md:py-32">
+    <section id="craft" className="bg-cream px-5 py-16 md:px-12 md:py-32">
       <div ref={headingRef} className="mx-auto max-w-2xl text-center">
-        <p className="mb-4 text-xs uppercase tracking-[0.28em] text-wood">
+        <p className="mb-3 text-xs uppercase tracking-[0.28em] text-wood md:mb-4">
           {t.story.eyebrow}
         </p>
-        <h2 className="font-display text-4xl italic leading-tight text-espresso md:text-5xl">
+        <h2 className="font-display text-2xl italic leading-tight text-espresso md:text-5xl">
           {t.story.title}
         </h2>
       </div>
 
-      <div className="mx-auto mt-16 max-w-5xl divide-y divide-espresso/8 md:mt-24">
+      <div className="mx-auto mt-8 max-w-5xl divide-y divide-espresso/8 md:mt-24">
         {PANELS.map((panel, i) => (
           <StoryPanel key={i} {...panel} />
         ))}

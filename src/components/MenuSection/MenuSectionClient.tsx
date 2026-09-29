@@ -74,18 +74,18 @@ export default function MenuSectionClient({ items }: { items: MenuItem[] }) {
   }, []);
 
   return (
-    <section id="menu" className="bg-cream-soft px-6 py-24 md:px-12 md:py-32">
+    <section id="menu" className="bg-cream-soft px-5 py-16 md:px-12 md:py-32">
       <div ref={headingRef} className="mx-auto max-w-2xl text-center">
-        <p className="mb-4 text-xs uppercase tracking-[0.28em] text-wood">
+        <p className="mb-3 text-xs uppercase tracking-[0.28em] text-wood md:mb-4">
           {t.menu.eyebrow}
         </p>
-        <h2 className="font-display text-4xl italic leading-tight text-espresso md:text-5xl">
+        <h2 className="font-display text-2xl italic leading-tight text-espresso md:text-5xl">
           {t.menu.title}
         </h2>
       </div>
 
       {filters.length > 2 && (
-        <div className="mx-auto mt-10 flex max-w-4xl flex-wrap items-center justify-center gap-2.5">
+        <div className="mx-auto mt-6 flex max-w-4xl flex-wrap items-center justify-center gap-2 md:mt-10 md:gap-2.5">
           {filters.map((f) => (
             <button
               key={f.value}
@@ -106,7 +106,7 @@ export default function MenuSectionClient({ items }: { items: MenuItem[] }) {
 
       <div
         ref={gridRef}
-        className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:mt-20 lg:grid-cols-3"
+        className="mx-auto mt-8 grid max-w-6xl grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6 md:mt-20 lg:grid-cols-3"
       >
         {filteredItems.map((item) => (
           <div key={item.id} data-menu-card>

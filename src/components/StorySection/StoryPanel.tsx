@@ -87,10 +87,10 @@ export default function StoryPanel({
   return (
     <div
       ref={rootRef}
-      className="grid items-center gap-10 py-10 md:grid-cols-2 md:gap-16 md:py-16"
+      className="grid items-center gap-5 py-6 md:grid-cols-2 md:gap-16 md:py-16"
     >
       <div className={`relative ${reverse ? "md:order-2" : ""}`}>
-        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2px] bg-beige">
+        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2px] bg-beige md:aspect-[4/5]">
           <div ref={imageRef} className="absolute inset-0 scale-110">
             <Image
               src={image.src}
@@ -109,13 +109,13 @@ export default function StoryPanel({
         </div>
       </div>
       <div ref={textRef} className={reverse ? "md:order-1" : ""}>
-        <p className="mb-4 text-xs uppercase tracking-[0.28em] text-wood">
+        <p className="mb-2 text-xs uppercase tracking-[0.28em] text-wood md:mb-4">
           {eyebrow}
         </p>
-        <h3 className="font-display text-3xl italic leading-[1.15] text-espresso md:text-4xl">
+        <h3 className="font-display text-xl italic leading-[1.15] text-espresso md:text-4xl">
           {title}
         </h3>
-        <p className="mt-5 max-w-md text-[15px] leading-relaxed text-espresso/70">
+        <p className="mt-2 max-w-md text-sm leading-relaxed text-espresso/70 md:mt-5 md:text-[15px]">
           {copy}
         </p>
       </div>
