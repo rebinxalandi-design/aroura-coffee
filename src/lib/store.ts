@@ -313,10 +313,15 @@ export async function findAdminByUsername(
   username: string
 ): Promise<AdminUser | undefined> {
   await ensureSeeded();
+  // ilike's pattern-matching semantics treat "%"/"_" in the input as
+  // wildcards -- escaped here so a username containing those characters
+  // (or literally "%") can't accidentally match a different account
+  // during signup's uniqueness check or at login. Still case-insensitive.
+  const escaped = username.replace(/[%_]/g, (c) => `\\${c}`);
   const { data, error } = await supabase
     .from("admins")
     .select("*")
-    .ilike("username", username)
+    .ilike("username", escaped)
     .maybeSingle();
   if (error) throw error;
   return data ? adminFromRow(data as AdminRow) : undefined;

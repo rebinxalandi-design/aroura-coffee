@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { listOrders, createOrder, findMenuItem } from "@/lib/store";
 import { getCurrentUser } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+
+// Ordering is intentionally unauthenticated (any customer can place one),
+// so this caps how many a single IP can create in a short window --
+// generous enough for a real customer ordering several items in one
+// visit, tight enough to blunt a script flooding the orders table.
+const ORDER_LIMIT = 10;
+const ORDER_WINDOW_MS = 10 * 60 * 1000;
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -12,6 +20,19 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  const { allowed, retryAfterSeconds } = checkRateLimit(
+    `order:${ip}`,
+    ORDER_LIMIT,
+    ORDER_WINDOW_MS
+  );
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } }
+    );
+  }
+
   const body = await request.json().catch(() => null);
   if (!body) {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });

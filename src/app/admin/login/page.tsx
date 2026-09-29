@@ -3,9 +3,10 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { translateApiError } from "@/lib/i18n/dictionary";
 
 export default function AdminLoginPage() {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +24,16 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ username, password }),
       });
       if (!res.ok) {
-        setError(t.admin.loginError);
+        if (res.status === 429) {
+          const data = await res.json().catch(() => null);
+          setError(translateApiError(locale, data?.error));
+        } else {
+          // Deliberately generic for any other failure -- doesn't reveal
+          // whether the username exists, unlike the specific 429 case
+          // above which is safe to surface since it isn't tied to a
+          // particular account.
+          setError(t.admin.loginError);
+        }
         return;
       }
       router.push("/admin/orders");

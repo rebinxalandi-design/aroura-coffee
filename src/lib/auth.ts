@@ -6,10 +6,23 @@ import type { AdminUser, Role } from "./types";
 export const SESSION_COOKIE = "aroura_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
-// Server-only secret. In production this MUST be set via env var; a stable
-// per-process fallback is used only so local/dev runs work out of the box.
-const SESSION_SECRET =
-  process.env.SESSION_SECRET ?? "dev-only-insecure-secret-change-me";
+// Server-only secret used to sign session cookies. A publicly-known
+// fallback here would let anyone forge an admin session (this file lives
+// in a public repo), so production must set a real one -- fail loudly
+// instead of silently signing with a value every reader of this code
+// already knows.
+const DEV_FALLBACK_SECRET = "dev-only-insecure-secret-change-me";
+
+if (process.env.NODE_ENV === "production" && !process.env.SESSION_SECRET) {
+  throw new Error(
+    "SESSION_SECRET is not set in production. Set it to a long random " +
+      "value (e.g. `openssl rand -hex 32`) in the hosting provider's " +
+      "environment variables -- without it, session cookies would be " +
+      "signed with a fallback value that's public in this repo."
+  );
+}
+
+const SESSION_SECRET = process.env.SESSION_SECRET ?? DEV_FALLBACK_SECRET;
 
 function base64url(input: ArrayBuffer | Uint8Array): string {
   const bytes = input instanceof Uint8Array ? input : new Uint8Array(input);
