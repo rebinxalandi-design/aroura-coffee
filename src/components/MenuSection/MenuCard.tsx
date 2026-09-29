@@ -35,7 +35,9 @@ export default function MenuCard({
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       data-cursor-hover
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-cream-soft/50 shadow-[0_8px_30px_-12px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150 transition-colors duration-500 hover:bg-cream-soft/70"
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-cream-soft/50 shadow-[0_8px_30px_-12px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150 transition-colors duration-500 hover:bg-cream-soft/70 ${
+        item.available ? "" : "opacity-70"
+      }`}
     >
       <div className="relative aspect-[5/4] w-full overflow-hidden bg-beige">
         <div ref={imgRef} className="absolute inset-0">
@@ -44,13 +46,18 @@ export default function MenuCard({
             alt={item.image.alt}
             fill
             sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 30vw"
-            className="object-cover"
+            className={`object-cover ${item.available ? "" : "grayscale"}`}
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-espresso-deep/35 via-transparent to-espresso-deep/10" />
         </div>
-        {tag && (
+        {tag && item.available && (
           <span className="absolute left-4 top-4 rounded-full border border-white/30 bg-white/25 px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-espresso shadow-sm backdrop-blur-md">
             {tag}
+          </span>
+        )}
+        {!item.available && (
+          <span className="absolute left-4 top-4 rounded-full border border-white/30 bg-espresso-deep/70 px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-[#f3e6d8] shadow-sm backdrop-blur-md">
+            {t.menu.soldOut}
           </span>
         )}
       </div>
@@ -71,10 +78,11 @@ export default function MenuCard({
         <button
           type="button"
           onClick={onOrder}
+          disabled={!item.available}
           data-cursor-hover
-          className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full border border-espresso/25 px-5 text-xs uppercase tracking-[0.15em] text-espresso transition-colors duration-300 hover:border-espresso hover:bg-espresso hover:text-cream"
+          className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full border border-espresso/25 px-5 text-xs uppercase tracking-[0.15em] text-espresso transition-colors duration-300 hover:border-espresso hover:bg-espresso hover:text-cream disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-espresso/25 disabled:hover:bg-transparent disabled:hover:text-espresso"
         >
-          {t.menu.order}
+          {item.available ? t.menu.order : t.menu.soldOut}
         </button>
       </div>
       <div className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-espresso transition-transform duration-500 group-hover:scale-x-100" />

@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deleteAdmin, findAdminById, updateAdminPassword } from "@/lib/store";
+import {
+  deleteAdmin,
+  findAdminById,
+  updateAdminPassword,
+  updateAdminUsername,
+} from "@/lib/store";
 import { getCurrentUser } from "@/lib/auth";
 
 export async function PATCH(
@@ -18,12 +23,34 @@ export async function PATCH(
   }
 
   const body = await request.json().catch(() => null);
-  const password = body?.password;
-  if (typeof password !== "string" || password.length < 6) {
-    return NextResponse.json({ error: "invalid_password" }, { status: 400 });
+  if (!body) {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
-  await updateAdminPassword(id, password);
+  const { password, username } = body;
+
+  if (password === undefined && username === undefined) {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+
+  if (password !== undefined) {
+    if (typeof password !== "string" || password.length < 6) {
+      return NextResponse.json({ error: "invalid_password" }, { status: 400 });
+    }
+    await updateAdminPassword(id, password);
+  }
+
+  if (username !== undefined) {
+    if (typeof username !== "string" || username.trim().length < 3) {
+      return NextResponse.json({ error: "invalid_username" }, { status: 400 });
+    }
+    try {
+      await updateAdminUsername(id, username.trim());
+    } catch {
+      return NextResponse.json({ error: "username_taken" }, { status: 409 });
+    }
+  }
+
   return NextResponse.json({ ok: true });
 }
 

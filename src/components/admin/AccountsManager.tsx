@@ -13,6 +13,8 @@ interface SafeAdmin {
   createdAt: string;
 }
 
+type EditMode = "password" | "username" | null;
+
 export default function AccountsManager({
   initialAdmins,
   currentUserId,
@@ -29,10 +31,11 @@ export default function AccountsManager({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [passwordEditId, setPasswordEditId] = useState<string | null>(null);
-  const [newPassword, setNewPassword] = useState("");
-  const [passwordSubmitting, setPasswordSubmitting] = useState(false);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState<EditMode>(null);
+  const [editValue, setEditValue] = useState("");
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
 
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
@@ -67,32 +70,46 @@ export default function AccountsManager({
     }
   };
 
-  const startPasswordChange = (id: string) => {
-    setPasswordEditId(id);
-    setNewPassword("");
-    setPasswordError(null);
+  const startEdit = (id: string, mode: EditMode) => {
+    setEditId(id);
+    setEditMode(mode);
+    setEditValue("");
+    setEditError(null);
   };
 
-  const handlePasswordChange = async (e: FormEvent, id: string) => {
+  const cancelEdit = () => {
+    setEditId(null);
+    setEditMode(null);
+  };
+
+  const handleEditSubmit = async (e: FormEvent, id: string) => {
     e.preventDefault();
-    setPasswordSubmitting(true);
-    setPasswordError(null);
+    setEditSubmitting(true);
+    setEditError(null);
     try {
+      const payload =
+        editMode === "username" ? { username: editValue } : { password: editValue };
       const res = await fetch(`/api/admins/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: newPassword }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) {
-        setPasswordError(translateApiError(locale, data?.error));
+        setEditError(translateApiError(locale, data?.error));
         return;
       }
-      setPasswordEditId(null);
-      setNewPassword("");
-      showToast(t.admin.passwordChanged, "success");
+      if (editMode === "username") {
+        setAdmins((prev) =>
+          prev.map((a) => (a.id === id ? { ...a, username: editValue.trim() } : a))
+        );
+        showToast(t.admin.usernameChanged, "success");
+      } else {
+        showToast(t.admin.passwordChanged, "success");
+      }
+      cancelEdit();
     } finally {
-      setPasswordSubmitting(false);
+      setEditSubmitting(false);
     }
   };
 
@@ -153,7 +170,7 @@ export default function AccountsManager({
             key={a.id}
             className="rounded-2xl border border-white/20 bg-cream-soft/50 px-5 py-3.5 backdrop-blur-md"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm text-espresso">{a.username}</p>
                 <p className="text-xs text-espresso/50">
@@ -162,7 +179,13 @@ export default function AccountsManager({
               </div>
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() => startPasswordChange(a.id)}
+                  onClick={() => startEdit(a.id, "username")}
+                  className="text-xs uppercase tracking-[0.1em] text-espresso underline decoration-espresso/30 underline-offset-4 hover:decoration-espresso"
+                >
+                  {t.admin.changeUsername}
+                </button>
+                <button
+                  onClick={() => startEdit(a.id, "password")}
                   className="text-xs uppercase tracking-[0.1em] text-espresso underline decoration-espresso/30 underline-offset-4 hover:decoration-espresso"
                 >
                   {t.admin.changePassword}
@@ -178,18 +201,18 @@ export default function AccountsManager({
               </div>
             </div>
 
-            {passwordEditId === a.id && (
+            {editId === a.id && (
               <form
-                onSubmit={(e) => handlePasswordChange(e, a.id)}
+                onSubmit={(e) => handleEditSubmit(e, a.id)}
                 className="mt-3 flex flex-wrap items-end gap-3 border-t border-espresso/10 pt-3"
               >
                 <label className="flex flex-1 min-w-[160px] flex-col gap-1.5 text-sm text-espresso/80">
-                  {t.admin.newPassword}
+                  {editMode === "username" ? t.admin.newUsername : t.admin.newPassword}
                   <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    minLength={6}
+                    type={editMode === "username" ? "text" : "password"}
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    minLength={editMode === "username" ? 3 : 6}
                     autoFocus
                     className="rounded-[3px] border border-espresso/20 bg-cream px-3.5 py-2.5 text-sm text-espresso outline-none focus:border-espresso/50"
                     required
@@ -197,21 +220,19 @@ export default function AccountsManager({
                 </label>
                 <button
                   type="submit"
-                  disabled={passwordSubmitting}
+                  disabled={editSubmitting}
                   className="rounded-full bg-espresso px-5 py-2 text-xs text-cream transition-colors hover:bg-espresso-deep disabled:opacity-60"
                 >
-                  {passwordSubmitting ? t.admin.saving : t.admin.save}
+                  {editSubmitting ? t.admin.saving : t.admin.save}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPasswordEditId(null)}
+                  onClick={cancelEdit}
                   className="rounded-full border border-espresso/20 px-5 py-2 text-xs text-espresso transition-colors hover:bg-espresso/5"
                 >
                   {t.admin.cancel}
                 </button>
-                {passwordError && (
-                  <p className="w-full text-sm text-danger">{passwordError}</p>
-                )}
+                {editError && <p className="w-full text-sm text-danger">{editError}</p>}
               </form>
             )}
           </div>

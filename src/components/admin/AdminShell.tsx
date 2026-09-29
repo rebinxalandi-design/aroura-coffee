@@ -32,6 +32,7 @@ export default function AdminShell({
   }
 
   const links = [
+    { href: "/admin/dashboard", label: t.admin.dashboard, superOnly: true },
     { href: "/admin/orders", label: t.admin.orders, superOnly: false },
     { href: "/admin/menu", label: t.admin.menuManagement, superOnly: true },
     { href: "/admin/accounts", label: t.admin.adminAccounts, superOnly: true },

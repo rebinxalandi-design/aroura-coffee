@@ -5,7 +5,7 @@ import type { AdminUser, MenuCategory, MenuItem, Order, OrderStatus } from "./ty
 const DEFAULT_SUPER_ADMIN_USERNAME = "superadmin";
 const DEFAULT_SUPER_ADMIN_PASSWORD = "Aroura@2025";
 
-const SEED_MENU_ITEMS: Omit<MenuItem, "id" | "createdAt" | "updatedAt">[] = [
+const SEED_MENU_ITEMS: Omit<MenuItem, "id" | "createdAt" | "updatedAt" | "available">[] = [
   {
     name: { en: "Signature Espresso", fa: "اسپرسو ویژه" },
     description: {
@@ -208,6 +208,7 @@ interface MenuItemRow {
   tag: MenuItem["tag"];
   category: MenuCategory;
   image: MenuItem["image"];
+  available: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -221,6 +222,7 @@ function menuItemFromRow(row: MenuItemRow): MenuItem {
     tag: row.tag,
     category: row.category,
     image: row.image,
+    available: row.available,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -374,6 +376,24 @@ export async function updateAdminPassword(
   return data ? adminFromRow(data as AdminRow) : undefined;
 }
 
+export async function updateAdminUsername(
+  id: string,
+  newUsername: string
+): Promise<AdminUser | undefined> {
+  const existing = await findAdminByUsername(newUsername);
+  if (existing && existing.id !== id) {
+    throw new Error("Username already exists");
+  }
+  const { data, error } = await supabase
+    .from("admins")
+    .update({ username: newUsername })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
+  if (error) throw error;
+  return data ? adminFromRow(data as AdminRow) : undefined;
+}
+
 // ---- Menu ----
 export async function listMenuItems(): Promise<MenuItem[]> {
   await ensureSeeded();
@@ -396,7 +416,8 @@ export async function findMenuItem(id: string): Promise<MenuItem | undefined> {
 }
 
 export async function createMenuItem(
-  input: Omit<MenuItem, "id" | "createdAt" | "updatedAt">
+  input: Omit<MenuItem, "id" | "createdAt" | "updatedAt" | "available"> &
+    Partial<Pick<MenuItem, "available">>
 ): Promise<MenuItem> {
   const { data, error } = await supabase
     .from("menu_items")
@@ -407,6 +428,7 @@ export async function createMenuItem(
       tag: input.tag,
       category: input.category,
       image: input.image,
+      available: input.available ?? true,
     })
     .select()
     .single();
@@ -425,6 +447,7 @@ export async function updateMenuItem(
   if (patch.tag !== undefined) row.tag = patch.tag;
   if (patch.category !== undefined) row.category = patch.category;
   if (patch.image !== undefined) row.image = patch.image;
+  if (patch.available !== undefined) row.available = patch.available;
 
   const { data, error } = await supabase
     .from("menu_items")

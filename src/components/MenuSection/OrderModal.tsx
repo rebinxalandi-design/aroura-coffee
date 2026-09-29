@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useToast } from "@/lib/toast/ToastProvider";
 import { formatToman } from "@/lib/currency";
+import { translateApiError } from "@/lib/i18n/dictionary";
 import type { MenuItem } from "@/lib/types";
 
 export default function OrderModal({
@@ -40,7 +41,11 @@ export default function OrderModal({
           tableOrLocation: table,
         }),
       });
-      if (!res.ok) throw new Error("failed");
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setError(translateApiError(locale, data?.error));
+        return;
+      }
       showToast(t.orderModal.success, "success");
       onClose();
     } catch {

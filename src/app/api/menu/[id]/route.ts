@@ -33,7 +33,7 @@ export async function PATCH(
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
-  const { nameEn, nameFa, descEn, descFa, priceToman, tagEn, tagFa, category, imageSrc, imageAlt } = body;
+  const { nameEn, nameFa, descEn, descFa, priceToman, tagEn, tagFa, category, imageSrc, imageAlt, available } = body;
 
   const patch: Parameters<typeof updateMenuItem>[1] = {};
   if (nameEn !== undefined || nameFa !== undefined) {
@@ -59,6 +59,9 @@ export async function PATCH(
   }
   if (typeof imageSrc === "string" && imageSrc.trim()) {
     patch.image = { src: imageSrc, alt: imageAlt ?? existing.image.alt };
+  }
+  if (typeof available === "boolean") {
+    patch.available = available;
   }
 
   const updated = await updateMenuItem(id, patch);

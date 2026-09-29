@@ -18,6 +18,7 @@ export interface MenuItem {
   tag: { en: string; fa: string };
   category: MenuCategory;
   image: { src: string; alt: string };
+  available: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -30,6 +30,9 @@ export async function POST(request: NextRequest) {
   if (!item) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
+  if (!item.available) {
+    return NextResponse.json({ error: "item_unavailable" }, { status: 400 });
+  }
 
   const order = await createOrder({
     itemId: item.id,

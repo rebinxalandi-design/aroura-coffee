@@ -72,6 +72,25 @@ export default function MenuManager({
     }
   };
 
+  const handleToggleAvailable = async (item: MenuItem) => {
+    const nextAvailable = !item.available;
+    const res = await fetch(`/api/menu/${item.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ available: nextAvailable }),
+    });
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      showToast(translateApiError(locale, data?.error), "error");
+      return;
+    }
+    setItems((prev) => prev.map((i) => (i.id === item.id ? data.item : i)));
+    showToast(
+      nextAvailable ? t.admin.markedAvailable : t.admin.markedUnavailable,
+      "success"
+    );
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -115,7 +134,9 @@ export default function MenuManager({
           ) : (
             <div
               key={item.id}
-              className="flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-cream-soft/50 shadow-[0_8px_30px_-14px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150"
+              className={`flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-cream-soft/50 shadow-[0_8px_30px_-14px_rgba(44,25,18,0.25)] backdrop-blur-xl backdrop-saturate-150 ${
+                item.available ? "" : "opacity-60"
+              }`}
             >
               <div className="relative aspect-[5/4] w-full bg-beige">
                 <Image
@@ -128,6 +149,11 @@ export default function MenuManager({
                 <span className="absolute left-3 top-3 rounded-full border border-white/30 bg-white/25 px-3 py-1 text-[10px] uppercase tracking-[0.12em] text-espresso backdrop-blur-md">
                   {t.admin.categories[item.category]}
                 </span>
+                {!item.available && (
+                  <span className="absolute right-3 top-3 rounded-full border border-danger/40 bg-danger-fill px-3 py-1 text-[10px] uppercase tracking-[0.12em] text-white">
+                    {t.admin.unavailable}
+                  </span>
+                )}
               </div>
               <div className="flex flex-1 flex-col justify-between p-5">
                 <div>
@@ -143,7 +169,7 @@ export default function MenuManager({
                     {item.description[locale]}
                   </p>
                 </div>
-                <div className="mt-4 flex items-center gap-3">
+                <div className="mt-4 flex flex-wrap items-center gap-3">
                   <button
                     onClick={() => {
                       setEditingId(item.id);
@@ -152,6 +178,12 @@ export default function MenuManager({
                     className="text-xs uppercase tracking-[0.1em] text-espresso underline decoration-espresso/30 underline-offset-4 hover:decoration-espresso"
                   >
                     {t.admin.editItem}
+                  </button>
+                  <button
+                    onClick={() => handleToggleAvailable(item)}
+                    className="text-xs uppercase tracking-[0.1em] text-espresso underline decoration-espresso/30 underline-offset-4 hover:decoration-espresso"
+                  >
+                    {item.available ? t.admin.markUnavailable : t.admin.markAvailable}
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
