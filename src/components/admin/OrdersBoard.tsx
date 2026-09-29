@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useToast } from "@/lib/toast/ToastProvider";
 import { formatToman } from "@/lib/currency";
 import type { Order, OrderStatus } from "@/lib/types";
 
-const POLL_INTERVAL_MS = 5000;
+const POLL_INTERVAL_MS = 3000;
 
 const STATUS_STYLES: Record<OrderStatus, string> = {
   pending: "bg-gold/15 text-wood border-gold/30",
@@ -15,19 +15,70 @@ const STATUS_STYLES: Record<OrderStatus, string> = {
   completed: "bg-espresso/10 text-espresso border-espresso/25",
 };
 
+// Two-tone chime (no audio file needed -- generated on the fly via Web
+// Audio, so there's nothing to fetch/host and it works the same offline).
+// Browsers block audio until a user gesture happens on the page at least
+// once, which is fine here: an admin will have clicked/tapped the page
+// long before the first order of their shift arrives.
+function playNewOrderChime() {
+  try {
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    const now = ctx.currentTime;
+
+    [880, 1320].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      const start = now + i * 0.14;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.25, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.32);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.34);
+    });
+
+    setTimeout(() => ctx.close(), 800);
+  } catch {
+    // Audio isn't essential to the ordering flow -- never let it break
+    // the page (e.g. autoplay policies throwing before any user gesture).
+  }
+}
+
 export default function OrdersBoard() {
   const { locale, t } = useLocale();
   const { showToast } = useToast();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const knownOrderIds = useRef<Set<string> | null>(null);
 
   const fetchOrders = useCallback(async () => {
     try {
       const res = await fetch("/api/orders", { cache: "no-store" });
       if (!res.ok) return;
       const data = await res.json();
-      setOrders(data.orders ?? []);
+      const fetched: Order[] = data.orders ?? [];
+
+      if (knownOrderIds.current === null) {
+        // First load: just record what's already there, don't chime for
+        // orders that existed before this admin opened the page.
+        knownOrderIds.current = new Set(fetched.map((o) => o.id));
+      } else {
+        const isGenuinelyNew = fetched.some(
+          (o) => o.status === "pending" && !knownOrderIds.current!.has(o.id)
+        );
+        for (const o of fetched) knownOrderIds.current.add(o.id);
+        if (isGenuinelyNew) playNewOrderChime();
+      }
+
+      setOrders(fetched);
     } finally {
       setLoading(false);
     }
