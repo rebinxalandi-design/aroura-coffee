@@ -359,6 +359,21 @@ export async function deleteAdmin(id: string): Promise<void> {
   if (error) throw error;
 }
 
+export async function updateAdminPassword(
+  id: string,
+  newPassword: string
+): Promise<AdminUser | undefined> {
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+  const { data, error } = await supabase
+    .from("admins")
+    .update({ password_hash: passwordHash })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
+  if (error) throw error;
+  return data ? adminFromRow(data as AdminRow) : undefined;
+}
+
 // ---- Menu ----
 export async function listMenuItems(): Promise<MenuItem[]> {
   await ensureSeeded();

@@ -29,6 +29,11 @@ export default function AccountsManager({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [passwordEditId, setPasswordEditId] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordSubmitting, setPasswordSubmitting] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -59,6 +64,35 @@ export default function AccountsManager({
     const res = await fetch(`/api/admins/${id}`, { method: "DELETE" });
     if (res.ok) {
       setAdmins((prev) => prev.filter((a) => a.id !== id));
+    }
+  };
+
+  const startPasswordChange = (id: string) => {
+    setPasswordEditId(id);
+    setNewPassword("");
+    setPasswordError(null);
+  };
+
+  const handlePasswordChange = async (e: FormEvent, id: string) => {
+    e.preventDefault();
+    setPasswordSubmitting(true);
+    setPasswordError(null);
+    try {
+      const res = await fetch(`/api/admins/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: newPassword }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setPasswordError(translateApiError(locale, data?.error));
+        return;
+      }
+      setPasswordEditId(null);
+      setNewPassword("");
+      showToast(t.admin.passwordChanged, "success");
+    } finally {
+      setPasswordSubmitting(false);
     }
   };
 
@@ -117,21 +151,68 @@ export default function AccountsManager({
         {admins.map((a) => (
           <div
             key={a.id}
-            className="flex items-center justify-between rounded-2xl border border-white/20 bg-cream-soft/50 px-5 py-3.5 backdrop-blur-md"
+            className="rounded-2xl border border-white/20 bg-cream-soft/50 px-5 py-3.5 backdrop-blur-md"
           >
-            <div>
-              <p className="text-sm text-espresso">{a.username}</p>
-              <p className="text-xs text-espresso/50">
-                {a.role === "super_admin" ? t.admin.superAdmin : t.admin.admin}
-              </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-espresso">{a.username}</p>
+                <p className="text-xs text-espresso/50">
+                  {a.role === "super_admin" ? t.admin.superAdmin : t.admin.admin}
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => startPasswordChange(a.id)}
+                  className="text-xs uppercase tracking-[0.1em] text-espresso underline decoration-espresso/30 underline-offset-4 hover:decoration-espresso"
+                >
+                  {t.admin.changePassword}
+                </button>
+                {a.id !== currentUserId && (
+                  <button
+                    onClick={() => handleDelete(a.id)}
+                    className="text-xs uppercase tracking-[0.1em] text-danger underline decoration-danger/30 underline-offset-4 hover:decoration-danger"
+                  >
+                    {t.admin.deleteItem}
+                  </button>
+                )}
+              </div>
             </div>
-            {a.id !== currentUserId && (
-              <button
-                onClick={() => handleDelete(a.id)}
-                className="text-xs uppercase tracking-[0.1em] text-danger underline decoration-danger/30 underline-offset-4 hover:decoration-danger"
+
+            {passwordEditId === a.id && (
+              <form
+                onSubmit={(e) => handlePasswordChange(e, a.id)}
+                className="mt-3 flex flex-wrap items-end gap-3 border-t border-espresso/10 pt-3"
               >
-                {t.admin.deleteItem}
-              </button>
+                <label className="flex flex-1 min-w-[160px] flex-col gap-1.5 text-sm text-espresso/80">
+                  {t.admin.newPassword}
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    minLength={6}
+                    autoFocus
+                    className="rounded-[3px] border border-espresso/20 bg-cream px-3.5 py-2.5 text-sm text-espresso outline-none focus:border-espresso/50"
+                    required
+                  />
+                </label>
+                <button
+                  type="submit"
+                  disabled={passwordSubmitting}
+                  className="rounded-full bg-espresso px-5 py-2 text-xs text-cream transition-colors hover:bg-espresso-deep disabled:opacity-60"
+                >
+                  {passwordSubmitting ? t.admin.saving : t.admin.save}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPasswordEditId(null)}
+                  className="rounded-full border border-espresso/20 px-5 py-2 text-xs text-espresso transition-colors hover:bg-espresso/5"
+                >
+                  {t.admin.cancel}
+                </button>
+                {passwordError && (
+                  <p className="w-full text-sm text-danger">{passwordError}</p>
+                )}
+              </form>
             )}
           </div>
         ))}
