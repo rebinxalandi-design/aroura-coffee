@@ -1,52 +1,44 @@
+import { supabase } from "./supabase";
+
 /**
- * Minimal in-memory per-IP rate limiter (fixed window). Good enough to
- * blunt naive brute-force/spam scripts against a small single-cafe site
- * without adding a paid external store -- not a substitute for a real
- * distributed limiter (e.g. Upstash Redis) if traffic ever justifies one.
+ * Postgres-backed rate limiter (fixed window). An in-memory version
+ * doesn't work on Vercel's serverless model -- each request can land on a
+ * different, short-lived instance with its own empty memory, so a
+ * same-process counter almost never actually sees a second hit from the
+ * same attacker (confirmed in production: 8 rapid/parallel failed logins
+ * from the same IP all landed as separate "first" attempts). Using the
+ * database everyone's requests already share fixes that, at the cost of
+ * one extra round trip per check.
  *
- * Caveat: this state is per serverless instance/cold start on Vercel, so
- * a determined attacker spreading requests across many cold starts can
- * evade it. It still meaningfully raises the cost of a single-script
- * brute force from one warm instance, which is the realistic threat here.
+ * The increment is atomic (see rate_limit_hit() in
+ * supabase/migrations/002_add_rate_limits.sql) so concurrent requests
+ * from the same attacker can't race past each other between a read and a
+ * write.
  */
-
-interface Bucket {
-  count: number;
-  resetAt: number;
-}
-
-const buckets = new Map<string, Bucket>();
-
-// Periodically drop expired buckets so this doesn't grow unbounded over
-// a long-lived instance's lifetime.
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, bucket] of buckets) {
-    if (bucket.resetAt <= now) buckets.delete(key);
-  }
-}, 5 * 60 * 1000);
-
-export function checkRateLimit(
+export async function checkRateLimit(
   key: string,
   limit: number,
   windowMs: number
-): { allowed: boolean; retryAfterSeconds: number } {
-  const now = Date.now();
-  const bucket = buckets.get(key);
+): Promise<{ allowed: boolean; retryAfterSeconds: number }> {
+  const { data, error } = await supabase
+    .rpc("rate_limit_hit", { p_key: key, p_window_ms: windowMs })
+    .single();
 
-  if (!bucket || bucket.resetAt <= now) {
-    buckets.set(key, { count: 1, resetAt: now + windowMs });
+  if (error || !data) {
+    // Fail open: a rate-limit check that can't reach the database
+    // shouldn't take down login/ordering for every legitimate user.
     return { allowed: true, retryAfterSeconds: 0 };
   }
 
-  if (bucket.count >= limit) {
-    return {
-      allowed: false,
-      retryAfterSeconds: Math.ceil((bucket.resetAt - now) / 1000),
-    };
+  const { count, reset_at } = data as { count: number; reset_at: string };
+  if (count > limit) {
+    const retryAfterSeconds = Math.max(
+      0,
+      Math.ceil((new Date(reset_at).getTime() - Date.now()) / 1000)
+    );
+    return { allowed: false, retryAfterSeconds };
   }
 
-  bucket.count += 1;
   return { allowed: true, retryAfterSeconds: 0 };
 }
 

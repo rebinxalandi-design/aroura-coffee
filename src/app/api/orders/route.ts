@@ -21,7 +21,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  const { allowed, retryAfterSeconds } = checkRateLimit(
+  const { allowed, retryAfterSeconds } = await checkRateLimit(
     `order:${ip}`,
     ORDER_LIMIT,
     ORDER_WINDOW_MS

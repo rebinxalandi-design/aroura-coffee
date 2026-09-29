@@ -7,7 +7,7 @@ const LOGIN_WINDOW_MS = 5 * 60 * 1000;
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  const { allowed, retryAfterSeconds } = checkRateLimit(
+  const { allowed, retryAfterSeconds } = await checkRateLimit(
     `login:${ip}`,
     LOGIN_LIMIT,
     LOGIN_WINDOW_MS
