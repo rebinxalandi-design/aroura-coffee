@@ -8,13 +8,19 @@ export default function Footer() {
   const { t } = useLocale();
 
   return (
-    <footer id="visit" className="bg-espresso-deep px-5 py-14 text-[#f3e6d8] md:px-12 md:py-28">
+    <footer
+      id="visit"
+      className="border-t border-gold/25 bg-espresso-deep px-5 py-14 text-[#f3e6d8] md:px-12 md:py-28"
+    >
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end md:gap-10">
           <div>
-            <p className="mb-3 text-xs uppercase tracking-[0.28em] text-[#f3e6d8]/50 md:mb-4">
-              {t.footer.visitUs}
-            </p>
+            <div className="mb-3 flex items-center gap-3 md:mb-4">
+              <span className="h-px w-6 bg-gold/50" />
+              <p className="text-xs uppercase tracking-[0.28em] text-[#f3e6d8]/50">
+                {t.footer.visitUs}
+              </p>
+            </div>
             <h2 className="font-display max-w-md text-2xl italic leading-tight md:text-4xl">
               {t.footer.comeSit}
             </h2>

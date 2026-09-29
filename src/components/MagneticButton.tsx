@@ -19,7 +19,10 @@ export default function MagneticButton({
 
   const base =
     "magnetic-btn group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-8 py-4 text-sm font-medium tracking-wide transition-colors duration-500";
-  const solid = "bg-espresso text-cream hover:bg-espresso-deep";
+  // A hairline gold ring sitting just inside the fill -- the kind of small
+  // metallic detail luxury brand buttons use instead of a flat solid fill.
+  const solid =
+    "bg-espresso text-cream shadow-[inset_0_0_0_1px_rgba(217,168,84,0.35)] hover:bg-espresso-deep hover:shadow-[inset_0_0_0_1px_rgba(217,168,84,0.6)]";
   const outline =
     "border border-espresso/40 text-espresso hover:border-espresso";
 

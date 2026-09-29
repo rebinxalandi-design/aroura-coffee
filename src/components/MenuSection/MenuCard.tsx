@@ -91,7 +91,7 @@ export default function MenuCard({
           {item.available ? t.menu.order : t.menu.soldOut}
         </button>
       </div>
-      <div className="absolute inset-x-0 bottom-0 hidden h-px origin-left scale-x-0 bg-espresso transition-transform duration-500 group-hover:scale-x-100 sm:block" />
+      <div className="absolute inset-x-0 bottom-0 hidden h-px origin-left scale-x-0 bg-gold transition-transform duration-500 group-hover:scale-x-100 sm:block" />
     </div>
   );
 }

@@ -70,7 +70,7 @@ export default function Navbar() {
             className="group relative text-sm tracking-wide text-espresso/80 transition-colors hover:text-espresso"
           >
             {link.label}
-            <span className="absolute -bottom-1 left-0 h-px w-0 bg-espresso transition-all duration-300 group-hover:w-full" />
+            <span className="absolute -bottom-1 left-0 h-px w-0 bg-gold transition-all duration-300 group-hover:w-full" />
           </a>
         ))}
       </nav>
