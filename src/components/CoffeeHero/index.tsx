@@ -193,16 +193,28 @@ export default function CoffeeHero() {
                 : "invisible absolute translate-y-6 opacity-0"
             }
           >
-            {/* These captions sit on top of a photo, not the page background,
-                so they need to stay light in both themes -- text-cream would
-                flip to a dark color in the dark theme (where --color-cream is
-                swapped to sit behind dark-mode surfaces) and vanish. */}
-            <p className="font-display text-3xl italic text-[#f3e6d8] [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-5xl">
-              {s.title}
-            </p>
-            <p className="mt-3 text-sm tracking-wide text-[#f3e6d8]/85 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)] md:text-base">
-              {s.sub}
-            </p>
+            {/* A dark scrim sits behind the text itself (not just a
+                text-shadow) because at this fixed 14%-from-top position the
+                caption doesn't reliably land over the dark photo on every
+                viewport -- on a narrow/tall mobile screen the centered
+                square photo is shorter than the viewport, so the caption
+                lands on the plain cream page background instead, where the
+                light, fixed caption color (#f3e6d8, chosen to read on the
+                dark photo) has almost no contrast and was reported
+                unreadable in light mode. The scrim guarantees contrast
+                regardless of what's behind it. */}
+            <div className="rounded-2xl bg-espresso-deep/55 px-5 py-3 backdrop-blur-sm">
+              {/* These captions need to stay light in both themes -- text-cream
+                  would flip to a dark color in the dark theme (where
+                  --color-cream is swapped to sit behind dark-mode surfaces)
+                  and vanish. */}
+              <p className="font-display text-3xl italic text-[#f3e6d8] [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-5xl">
+                {s.title}
+              </p>
+              <p className="mt-3 text-sm tracking-wide text-[#f3e6d8]/85 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)] md:text-base">
+                {s.sub}
+              </p>
+            </div>
           </div>
         ))}
       </div>
@@ -212,12 +224,18 @@ export default function CoffeeHero() {
         data-part="final-reveal"
         className="invisible absolute inset-0 z-20 flex translate-y-6 flex-col items-center justify-end pb-16 text-center opacity-0 md:pb-20"
       >
-        <p className="mb-3 text-xs uppercase tracking-[0.3em] text-[#f3e6d8]/80 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)]">
-          {t.hero.brand}
-        </p>
-        <h1 className="font-display text-4xl italic text-[#f3e6d8] [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-6xl">
-          {t.hero.finalTitle}
-        </h1>
+        {/* Same scrim-behind-text fix as the stage captions above -- this
+            block is anchored to the bottom of the full-screen section, not
+            the (shorter, on narrow/tall viewports) centered photo, so it
+            can land on the plain page background instead of the photo. */}
+        <div className="rounded-2xl bg-espresso-deep/55 px-6 py-4 backdrop-blur-sm">
+          <p className="mb-3 text-xs uppercase tracking-[0.3em] text-[#f3e6d8]/80 [text-shadow:0_1px_10px_rgba(0,0,0,0.4)]">
+            {t.hero.brand}
+          </p>
+          <h1 className="font-display text-4xl italic text-[#f3e6d8] [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-6xl">
+            {t.hero.finalTitle}
+          </h1>
+        </div>
         <div className="mt-8">
           <MagneticButton>{t.hero.cta}</MagneticButton>
         </div>
